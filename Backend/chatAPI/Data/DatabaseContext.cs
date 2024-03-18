@@ -10,7 +10,7 @@ namespace DataContext
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
-            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var configuration = new ConfigurationBuilder().AddJsonFile("chatt.appsettings.json").Build();
             connectionString = configuration.GetValue<string>("ConnectionStrings:DefaultConnectionString")!;
             this.Database.EnsureCreated();
         }
