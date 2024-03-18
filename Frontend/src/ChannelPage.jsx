@@ -12,9 +12,9 @@ export default function ChannelPage(props)
     // GET messages
     useEffect(() =>
     {
-        // fetch("")
-        // .then((response) => response.json())
-        // .then((data) => setMessages(data))
+        fetch(`https://localhost:7006/chat/channels/${channelId}/messages`)
+        .then((response) => response.json())
+        .then((data) => setMessages(data))
     }, [])
 
     const channel = channels[channelId - 1]
@@ -25,7 +25,7 @@ export default function ChannelPage(props)
 
     return (
         <>
-        <h1>{channel.name}</h1>
+        <h1>{channel && channel.name}</h1>
         <ul>
             {messages.map((message, index) =>
             (
