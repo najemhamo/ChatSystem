@@ -7,40 +7,24 @@ export const UserContext = createContext()
 
 export default function HomePage()
 {
-    const LOCAL_CHANNELS =
-    [
-        {
-            id: 1,
-            name: "fandom-discussions"
-        }
-    ]
-    const [channels, setChannels] = useState(LOCAL_CHANNELS)
-    const LOCAL_USERS =
-    [
-        {
-            id: 1,
-            userName: "Glimra",
-            name: "Klara Andersson",
-            aboutMe: "Am I working hard, or hardly working?"
-        }
-    ]
-    const [users, setUsers] = useState(LOCAL_USERS)
+    const [channels, setChannels] = useState([])
+    const [users, setUsers] = useState([])
 
     // GET channels
     useEffect(() =>
     {
-        // fetch("")
-        // .then((response) => response.json())
-        // .then((data) => setChannels(data))
+        fetch("https://localhost:7006/chat/channels")
+        .then((response) => response.json())
+        .then((data) => setChannels(data))
     }, [])
 
 
     // GET users
     useEffect(() =>
     {
-        // fetch("")
-        // .then((response) => response.json())
-        // .then((data) => setUsers(data))
+        fetch("https://localhost:7006/chat/users")
+        .then((response) => response.json())
+        .then((data) => setUsers(data))
     }, [])
 
     const navigate = useNavigate()
@@ -67,7 +51,7 @@ export default function HomePage()
         </ul>
 
         <div>
-            <p onClick={() => navigate(`/users/1`)}>{users[0].userName}</p>
+            <p onClick={() => navigate(`/users/1`)}>{users[0] && users[0].userName}</p>
         </div>
 
         <UserContext.Provider value={{users}}>
