@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react"
 import { Route, Routes, useNavigate } from "react-router-dom"
+import ProfilePage from "./ProfilePage"
 import ChannelPage from "./ChannelPage"
 
 export const UserContext = createContext()
@@ -18,7 +19,9 @@ export default function HomePage()
     [
         {
             id: 1,
-            userName: "Klara"
+            userName: "Glimra",
+            name: "Klara Andersson",
+            aboutMe: "Am I working hard, or hardly working?"
         }
     ]
     const [users, setUsers] = useState(LOCAL_USERS)
@@ -42,6 +45,16 @@ export default function HomePage()
 
     const navigate = useNavigate()
 
+    const updateUsers = (data) =>
+    {
+        const newUsers = users.map((user) =>
+        {
+            if (user.id === data.updatedUser.id) return data.updatedUser
+            return user
+        })
+
+        setUsers(newUsers)
+    }
 
     return (
         <>
@@ -54,11 +67,12 @@ export default function HomePage()
         </ul>
 
         <div>
-            <p>{users[0].userName}</p>
+            <p onClick={() => navigate(`/users/1`)}>{users[0].userName}</p>
         </div>
 
         <UserContext.Provider value={{users}}>
             <Routes>
+                <Route path="/users/:userId" element={<ProfilePage updateUsers={updateUsers}/>}/>
                 <Route path='/channel/:channelId' element={<ChannelPage channels={channels}/>}/>
             </Routes>
         </UserContext.Provider>
