@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Repository;
+using Services;
 
 namespace Endpoints
 {
@@ -9,6 +10,7 @@ namespace Endpoints
         {
             var chat = app.MapGroup("/chat");
 
+            chat.MapGet("/", GetConnection);
             chat.MapGet("/channels", GetAllChannels);
             chat.MapGet("channels/{id}/messages", GetMessagesByChannelId);
             chat.MapGet("/users", GetAllUsers);
@@ -16,6 +18,21 @@ namespace Endpoints
             chat.MapPut("/users/{id}", UpdateUserById);
             chat.MapPost("users/{userId}/channels/{channelID}/message", CreateMessage);
         }
+
+        private static async Task GetConnection(HttpContext context, ChatService chatService)
+        {
+            if (context.WebSockets.IsWebSocketRequest)
+            {
+                var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                await chatService.HandleWebSocketConnection(webSocket);
+            }
+            else
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync("Expected a WebSocket request");
+            }
+        }
+
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
