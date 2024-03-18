@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react"
+import { createContext, useEffect, useState } from "react"
+import { Route, Routes, useNavigate } from "react-router-dom"
+import ProfilePage from "./ProfilePage"
+
+export const UserContext = createContext()
 
 export default function HomePage()
 {
     const LOCAL_CHANNELS =
     [
         {
-            id: 0,
+            id: 1,
             name: "fandom-discussions"
         }
     ]
@@ -13,8 +17,10 @@ export default function HomePage()
     const LOCAL_USERS =
     [
         {
-            id: 0,
-            userName: "Klara"
+            id: 1,
+            userName: "Glimra",
+            name: "Klara Andersson",
+            aboutMe: "Am I working hard, or hardly working?"
         }
     ]
     const [users, setUsers] = useState(LOCAL_USERS)
@@ -22,35 +28,52 @@ export default function HomePage()
     // GET channels
     useEffect(() =>
     {
-        fetch("")
-        .then((response) => response.json())
-        .then((data) => setChannels(data))
+        // fetch("")
+        // .then((response) => response.json())
+        // .then((data) => setChannels(data))
     }, [])
 
-    
+
     // GET users
     useEffect(() =>
     {
-        fetch("")
-        .then((response) => response.json())
-        .then((data) => setUsers(data))
+        // fetch("")
+        // .then((response) => response.json())
+        // .then((data) => setUsers(data))
     }, [])
 
+    const navigate = useNavigate()
 
+    const updateUsers = (data) =>
+    {
+        const newUsers = users.map((user) =>
+        {
+            if (user.id === data.updatedUser.id) return data.updatedUser
+            return user
+        })
+
+        setUsers(newUsers)
+    }
 
     return (
         <>
-        <h1>This is home</h1>
+        <h1>HomePage</h1>
         <ul>
             {channels.map((channel, index) =>
             (
-                <li key={index}>{channel.name}</li>
+                <li onClick={() => navigate(`/channel/${channel.id}`)} key={index}>{channel.name}</li>
             ))}
         </ul>
 
         <div>
-            <p>{users[0].userName}</p>
+            <p onClick={() => navigate(`/users/1`)}>{users[0].userName}</p>
         </div>
+
+        <UserContext.Provider value={{users}}>
+            <Routes>
+                <Route path="/users/:userId" element={<ProfilePage updateUsers={updateUsers}/>}/>
+            </Routes>
+        </UserContext.Provider>
         </>
     )
 }
