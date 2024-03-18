@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Models;
 using DataContext;
+using Endpoints;
 
 namespace Repository
 {
@@ -48,6 +49,32 @@ namespace Repository
             }
 
             // Return null if user is not found
+            return null;
+        }
+
+        public async Task<User?> UpdateUserById(int id, UpdateUserPayload payload)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            
+            // Check if user is null or if any of the payload fields are empty
+            if (user == null || string.IsNullOrEmpty(payload.UserName) || string.IsNullOrEmpty(payload.Name))
+            {
+                return null;
+            }
+
+            // Update user fields
+            if (user != null)
+            {
+                user.Name = payload.Name;
+                user.UserName = payload.UserName;
+                user.AboutMe = payload.AboutMe;
+                user.ProfilePicture = payload.ProfilePicture;
+
+                await _context.SaveChangesAsync();
+
+                return user;
+            }
+
             return null;
         }
 
