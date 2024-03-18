@@ -50,6 +50,23 @@ namespace Repository
             // Return null if user is not found
             return null;
         }
+
+        public async Task<IEnumerable<Message>> GetMessagesByChannelId(int channelId, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations)
+        {
+            if (preloadPolicy == PreloadPolicy.PreloadRelations)
+            {
+                return await _context.Messages
+                    .Include(m => m.User)
+                    .Where(m => m.ChannelId == channelId)
+                    .ToListAsync();
+            }
+            else
+            {
+                return await _context.Messages
+                    .Where(m => m.ChannelId == channelId)
+                    .ToListAsync();
+            }
+        }
     }
 
 }
