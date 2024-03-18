@@ -17,9 +17,18 @@ export default function ProfilePage(props)
     }
     const [newUser, setNewUser] = useState(INITIAL_USER)
     const [updateUser, setUpdateUser] = useState({})
+    const [user, setUser] = useState({})
+    const ownUserProfile = parseInt(userId) === 1
 
-    const user = users[userId - 1]
-    const ownUserProfile = user.id === 1
+    // GET user by id
+    useEffect(() =>
+    {
+        fetch(`https://localhost:7006/chat/user/${userId}`)
+        .then((response) => response.json())
+        .then((data) => {
+            setUser(data)
+        })
+    }, [])
 
     // PUT new user
     useEffect(() =>
@@ -36,7 +45,7 @@ export default function ProfilePage(props)
             body: JSON.stringify(updateUser)
         }
 
-        fetch("", putOptions)
+        fetch(`https://localhost:7006/chat/user/${userId}`, putOptions)
 
     }, [updateUser])
 
@@ -48,18 +57,21 @@ export default function ProfilePage(props)
             const updatedUser = newUser
             
             if (updatedUser.userName.length === 0)
-                updateUser.userName = user.userName
+                updatedUser.userName = user.userName
 
             if (updatedUser.name.length === 0)
-                updateUser.name = user.name
+                updatedUser.name = user.name
 
             if (updatedUser.aboutMe.length === 0)
-                updateUser.aboutMe = user.aboutMe
+                updatedUser.aboutMe = user.aboutMe
 
+            updatedUser.profilePicture = user.profilePicture
             updatedUser.id = user.id
+
             setUpdateUser(updatedUser)
             updateUsers({updatedUser})
             setButtonText("Edit")
+            setUser(updatedUser)
         }
         else
             setButtonText("Save")
@@ -68,15 +80,18 @@ export default function ProfilePage(props)
     const handleInput = (event) =>
     {
         const {name, value} = event.target
-        setNewUser({...newUser, [name]: value})
+        const tmpUser = {...newUser, [name]: value}
+        setNewUser(tmpUser)
     }
- 
+
     return (
         <>
             <h1>User Information</h1>
             {buttonText === "Edit" && <p>{user.userName}</p>}
             {buttonText === "Edit" && <p>{user.name}</p>}
             {buttonText === "Edit" && <p>{user.aboutMe}</p>}
+
+            <img src={user.profilePicture} width={380} height={300}></img>
 
             {buttonText === "Save" && <input name="userName" type="text" onChange={handleInput} placeholder={user.userName} value={newUser.userName}></input>}
             {buttonText === "Save" && <input name="name" type="text" onChange={handleInput} placeholder={user.name} value={newUser.name}></input>}
