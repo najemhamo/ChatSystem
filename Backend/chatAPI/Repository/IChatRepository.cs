@@ -16,7 +16,8 @@ namespace Repository
 
         // PUT user by id
         
-        // GET all messages
+        // GET all messages in a specific channel
+        Task<IEnumerable<Message>> GetMessagesByChannelId(int channelId, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations);
 
         // POST message
 
