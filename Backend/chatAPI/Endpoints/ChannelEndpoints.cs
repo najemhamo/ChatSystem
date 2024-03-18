@@ -9,10 +9,10 @@ namespace Endpoints
     {
         var chat = app.MapGroup("/chat");
 
-        chat.MapPost("/channels", GetAllChannels);
-        chat.MapPost("channels/{id}/messages", GetMessagesByChannelId);
-        chat.MapPost("/users", GetAllUsers);
-        chat.MapPost("/user/{id}", GetUserById);
+        chat.MapGet("/channels", GetAllChannels);
+        chat.MapGet("channels/{id}/messages", GetMessagesByChannelId);
+        chat.MapGet("/users", GetAllUsers);
+        chat.MapGet("/user/{id}", GetUserById);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
