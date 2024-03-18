@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react"
 import { Route, Routes, useNavigate } from "react-router-dom"
 import ProfilePage from "./ProfilePage"
+import ChannelPage from "./ChannelPage"
 
 export const UserContext = createContext()
 
@@ -72,6 +73,7 @@ export default function HomePage()
         <UserContext.Provider value={{users}}>
             <Routes>
                 <Route path="/users/:userId" element={<ProfilePage updateUsers={updateUsers}/>}/>
+                <Route path='/channel/:channelId' element={<ChannelPage channels={channels}/>}/>
             </Routes>
         </UserContext.Provider>
         </>
