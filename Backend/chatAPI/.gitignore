@@ -490,3 +490,4 @@ $RECYCLE.BIN/
 */**/obj/Release   
 /appsettings.Development.json
 /appsettings.json
+/Migrations
