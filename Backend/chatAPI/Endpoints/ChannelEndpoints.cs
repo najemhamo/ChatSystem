@@ -9,10 +9,11 @@ namespace Endpoints
     {
         var chat = app.MapGroup("/chat");
 
-        chat.MapPost("/channels", GetAllChannels);
-        chat.MapPost("channels/{id}/messages", GetMessagesByChannelId);
-        chat.MapPost("/users", GetAllUsers);
-        chat.MapPost("/user/{id}", GetUserById);
+        chat.MapGet("/channels", GetAllChannels);
+        chat.MapGet("channels/{id}/messages", GetMessagesByChannelId);
+        chat.MapGet("/users", GetAllUsers);
+        chat.MapGet("/user/{id}", GetUserById);
+        chat.MapPut("/user/{id}", UpdateUserById);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -42,6 +43,27 @@ namespace Endpoints
         }
         return TypedResults.Ok(user);
     }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    private static async Task<IResult> UpdateUserById(int id, IChatRepository chatRepository, UpdateUserPayload payload)
+    {
+        if (string.IsNullOrEmpty(payload.UserName))
+        {
+            return TypedResults.BadRequest("User Name is required");
+        }
+        if (string.IsNullOrEmpty(payload.Name))
+        {
+            return TypedResults.BadRequest("Name is required");
+        }
+        var user = await chatRepository.UpdateUserById(id, payload);
+        if (user == null)
+        {
+            return TypedResults.NotFound();
+        }
+        return TypedResults.Ok(user);
+    }
+
 
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
