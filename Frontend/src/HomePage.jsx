@@ -51,7 +51,7 @@ export default function HomePage()
         </ul>
 
         <div>
-            <p onClick={() => navigate(`/users/1`)}>{users[0] && users[0].userName}</p>
+            <p onClick={() => navigate(`/users/${users[0].id}`)}>{users[0] && users[0].userName}</p>
         </div>
 
         <UserContext.Provider value={{users}}>
