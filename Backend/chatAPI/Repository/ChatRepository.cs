@@ -94,6 +94,22 @@ namespace Repository
                     .ToListAsync();
             }
         }
-    }
 
+        public async Task<Message> CreateMessage(CreateMessagePayload payload)
+        {
+            DateTime utc = DateTime.Now.ToUniversalTime();
+            var message = new Message
+            {
+                MessageText = payload.MessageText,
+                UserId = payload.UserId,
+                ChannelId = payload.ChannelId
+            };
+
+            await _context.Messages.AddAsync(message);
+            await _context.SaveChangesAsync();
+
+            return message;
+        }
+    
+    }
 }
