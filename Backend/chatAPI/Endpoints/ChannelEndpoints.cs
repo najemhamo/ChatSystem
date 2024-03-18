@@ -12,8 +12,9 @@ namespace Endpoints
             chat.MapGet("/channels", GetAllChannels);
             chat.MapGet("channels/{id}/messages", GetMessagesByChannelId);
             chat.MapGet("/users", GetAllUsers);
-            chat.MapGet("/user/{id}", GetUserById);
-            chat.MapPut("/user/{id}", UpdateUserById);
+            chat.MapGet("/users/{id}", GetUserById);
+            chat.MapPut("/users/{id}", UpdateUserById);
+            chat.MapPost("users/{userId}/channels/{channelID}/message", CreateMessage);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -75,6 +76,14 @@ namespace Endpoints
                 return TypedResults.NotFound();
             }
             return TypedResults.Ok(messages);
+        }
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        private static async Task<IResult> CreateMessage(IChatRepository chatRepository, CreateMessagePayload payload)
+        {
+            var message = await chatRepository.CreateMessage(payload);
+            return TypedResults.Ok(message);
         }
     }
 }
