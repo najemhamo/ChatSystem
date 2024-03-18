@@ -18,7 +18,6 @@ export default function HomePage()
         .then((data) => setChannels(data))
     }, [])
 
-
     // GET users
     useEffect(() =>
     {

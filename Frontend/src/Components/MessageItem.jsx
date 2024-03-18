@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../HomePage"
 
 export default function MessageItem(props)
@@ -10,7 +10,7 @@ export default function MessageItem(props)
     return (
     <>
         <div>
-            <p>{message.text} {user.userName}</p>
+            <p>{message && message.messageText} {user && user.userName}</p>
         </div>
     </>
     )

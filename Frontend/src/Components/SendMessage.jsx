@@ -10,7 +10,7 @@ export default function SendMessage(props)
 
     useEffect(() =>
     {
-        if (!createMessage.text)
+        if (!createMessage.messageText)
             return
 
         const postOptions =
@@ -22,25 +22,24 @@ export default function SendMessage(props)
             body: JSON.stringify(createMessage)
         }
 
-        // fetch("", postOptions)
-        // .then((response) => response.json())
-        // .then((data) => updateMessages(data))
+        fetch(`https://localhost:7006/chat/users/${1}/channels/${channelId}/message`, postOptions)
     }, [createMessage])
 
     const handleInput = (event) =>
     {
-        setNewMessage({text: event.target.value})
+        setNewMessage({messageText: event.target.value})
     }
 
     const handleSend = () =>
     {
-        if (!newMessage.text || newMessage.text.length === 0)
+        if (!newMessage.messageText || newMessage.messageText.length === 0)
             return
 
         const message = {...newMessage, channelId: channelId, userId: 1}
+
         setCreateMessage(message)
-        setNewMessage({text: ""})
         updateMessages({message})
+        setNewMessage({messageText: ""})
     }
 
     return (
