@@ -10,7 +10,8 @@ namespace Endpoints
         var chat = app.MapGroup("/chat");
 
         chat.MapPost("/channels", GetAllChannels);
-
+        chat.MapPost("/users", GetAllUsers);
+        chat.MapPost("/user/{id}", GetUserById);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -19,6 +20,26 @@ namespace Endpoints
     {
         var channels = await chatRepository.GetChannels();
         return TypedResults.Ok(channels);
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    private static async Task<IResult> GetAllUsers(IChatRepository chatRepository)
+    {
+        var users = await chatRepository.GetUsers();
+        return TypedResults.Ok(users);
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    private static async Task<IResult> GetUserById(IChatRepository chatRepository, int id)
+    {
+        var user = await chatRepository.GetUserById(id);
+        if (user == null)
+        {
+            return TypedResults.NotFound();
+        }
+        return TypedResults.Ok(user);
     }
 
 }

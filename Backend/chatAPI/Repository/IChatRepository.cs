@@ -10,17 +10,15 @@ namespace Repository
 
     public interface IChatRepository
     {
-        // Get all users
-       
-        // Get user by id
-        
+        Task<IEnumerable<Channel>> GetChannels();
+        Task<IEnumerable<User>> GetUsers();        
+        Task<User> GetUserById(int id, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations);
+
         // PUT user by id
         
         // GET all messages
 
         // POST message
 
-        // GET channels
-        Task<IEnumerable<Channel>> GetChannels();
     }
 }
