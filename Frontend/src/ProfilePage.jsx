@@ -1,12 +1,10 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { UserContext } from "./HomePage"
 
 export default function ProfilePage(props)
 {
     const {updateUsers} = props
     const {userId} = useParams()
-    const {users} = useContext(UserContext)
     const [buttonText, setButtonText] = useState("Edit")
 
     const INITIAL_USER =
@@ -23,7 +21,7 @@ export default function ProfilePage(props)
     // GET user by id
     useEffect(() =>
     {
-        fetch(`https://localhost:7006/chat/user/${userId}`)
+        fetch(`https://localhost:7006/chat/users/${userId}`)
         .then((response) => response.json())
         .then((data) => {
             setUser(data)
@@ -45,7 +43,7 @@ export default function ProfilePage(props)
             body: JSON.stringify(updateUser)
         }
 
-        fetch(`https://localhost:7006/chat/user/${userId}`, putOptions)
+        fetch(`https://localhost:7006/chat/users/${userId}`, putOptions)
 
     }, [updateUser])
 
