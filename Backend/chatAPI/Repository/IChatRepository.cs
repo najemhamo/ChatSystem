@@ -17,6 +17,8 @@ namespace Repository
         Task<User?> UpdateUserById(int id, UpdateUserPayload payload);
         Task<IEnumerable<Message>> GetMessagesByChannelId(int channelId, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations);
         Task<Message> CreateMessage(CreateMessagePayload payload);
+        Task<Message> UpdateMessageById(int id, UpdateMessagePayload payload);
+        Task<Message> DeleteMessageById(int id);
 
     }
 }

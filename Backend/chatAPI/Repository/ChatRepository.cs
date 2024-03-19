@@ -110,6 +110,33 @@ namespace Repository
 
             return message;
         }
-    
+
+        public async Task<Message> UpdateMessageById(int id, UpdateMessagePayload payload)
+        {
+            var message = await _context.Messages.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (message != null)
+            {
+                message.MessageText = payload.MessageText;
+                await _context.SaveChangesAsync();
+                return message;
+            }
+
+            return null;
+        }
+
+        public async Task<Message> DeleteMessageById(int id)
+        {
+            var message = await _context.Messages.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (message != null)
+            {
+                _context.Messages.Remove(message);
+                await _context.SaveChangesAsync();
+                return message;
+            }
+
+            return null;
+        }
     }
 }

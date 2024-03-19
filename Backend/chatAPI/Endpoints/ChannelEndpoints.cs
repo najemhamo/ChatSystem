@@ -18,6 +18,8 @@ namespace Endpoints
             chat.MapGet("/users/{id}", GetUserById);
             chat.MapPut("/users/{id}", UpdateUserById);
             chat.MapPost("users/{userID}/channels/{channelID}/message", CreateMessage);
+            chat.MapPut("/messages/{messageID}", UpdateMessageById);
+            chat.MapDelete("/messages/{messageID}", DeleteMessageById);
         }
 
         private static async Task GetConnection(HttpContext context, ChatService chatService)
@@ -101,6 +103,32 @@ namespace Endpoints
         private static async Task<IResult> CreateMessage(IChatRepository chatRepository, CreateMessagePayload payload, ChatService chatService)
         {
             var message = await chatRepository.CreateMessage(payload);
+            await chatService.SendMessageToClients(message);
+            return TypedResults.Ok(message);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        private static async Task<IResult> UpdateMessageById(int id, IChatRepository chatRepository, UpdateMessagePayload payload, ChatService chatService)
+        {
+            var message = await chatRepository.UpdateMessageById(id, payload);
+            if (message == null)
+            {
+                return TypedResults.NotFound();
+            }
+            await chatService.SendMessageToClients(message);
+            return TypedResults.Ok(message);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        private static async Task<IResult> DeleteMessageById(int id, IChatRepository chatRepository, ChatService chatService)
+        {
+            var message = await chatRepository.DeleteMessageById(id);
+            if (message == null)
+            {
+                return TypedResults.NotFound();
+            }
             await chatService.SendMessageToClients(message);
             return TypedResults.Ok(message);
         }
