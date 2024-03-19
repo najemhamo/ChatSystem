@@ -5,7 +5,8 @@ function App() {
 
   return (
     <>
-      <HomePage/>
+    <h1>APP</h1>
+      {/* <HomePage/> */}
     </>
   )
 }

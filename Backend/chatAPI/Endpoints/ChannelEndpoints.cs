@@ -1,5 +1,7 @@
+using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Repository;
+using Services;
 
 namespace Endpoints
 {
@@ -9,13 +11,29 @@ namespace Endpoints
         {
             var chat = app.MapGroup("/chat");
 
+            chat.MapGet("/", GetConnection);
             chat.MapGet("/channels", GetAllChannels);
             chat.MapGet("channels/{id}/messages", GetMessagesByChannelId);
             chat.MapGet("/users", GetAllUsers);
             chat.MapGet("/users/{id}", GetUserById);
             chat.MapPut("/users/{id}", UpdateUserById);
-            chat.MapPost("users/{userId}/channels/{channelID}/message", CreateMessage);
+            chat.MapPost("users/{userID}/channels/{channelID}/message", CreateMessage);
         }
+
+        private static async Task GetConnection(HttpContext context, ChatService chatService)
+        {
+            if (context.WebSockets.IsWebSocketRequest)
+            {
+                var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                await chatService.HandleWebSocketConnection(webSocket);
+            }
+            else
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync("Expected a WebSocket request");
+            }
+        }
+
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -80,9 +98,10 @@ namespace Endpoints
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        private static async Task<IResult> CreateMessage(IChatRepository chatRepository, CreateMessagePayload payload)
+        private static async Task<IResult> CreateMessage(IChatRepository chatRepository, CreateMessagePayload payload, ChatService chatService)
         {
             var message = await chatRepository.CreateMessage(payload);
+            await chatService.SendMessageToClients(message);
             return TypedResults.Ok(message);
         }
     }
