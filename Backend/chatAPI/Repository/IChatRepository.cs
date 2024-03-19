@@ -12,6 +12,9 @@ namespace Repository
     public interface IChatRepository
     {
         Task<IEnumerable<Channel>> GetChannels();
+        Task<Channel> CreateChannel(CreateOrUpdateChannelPayload payload);
+        Task<Channel> UpdateChannelById(int id, CreateOrUpdateChannelPayload payload);
+        Task<Channel> DeleteChannelById(int id);
         Task<IEnumerable<User>> GetUsers();        
         Task<User> GetUserById(int id, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations);
         Task<User?> UpdateUserById(int id, UpdateUserPayload payload);
@@ -19,6 +22,5 @@ namespace Repository
         Task<Message> CreateMessage(CreateMessagePayload payload);
         Task<Message> UpdateMessageById(int id, UpdateMessagePayload payload);
         Task<Message> DeleteMessageById(int id);
-
     }
 }

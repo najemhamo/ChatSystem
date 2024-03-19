@@ -12,14 +12,17 @@ namespace Endpoints
             var chat = app.MapGroup("/chat");
 
             chat.MapGet("/", GetConnection);
-            chat.MapGet("/channels", GetAllChannels);
+            chat.MapGet("channels", GetAllChannels);
+            chat.MapPost("channels", CreateChannel);
+            chat.MapPut("channels/{id}", UpdateChannelById);
+            chat.MapDelete("channels/{id}", DeleteChannelById);
             chat.MapGet("channels/{id}/messages", GetMessagesByChannelId);
-            chat.MapGet("/users", GetAllUsers);
-            chat.MapGet("/users/{id}", GetUserById);
-            chat.MapPut("/users/{id}", UpdateUserById);
+            chat.MapGet("users", GetAllUsers);
+            chat.MapGet("users/{id}", GetUserById);
+            chat.MapPut("users/{id}", UpdateUserById);
             chat.MapPost("users/{userID}/channels/{channelID}/message", CreateMessage);
-            chat.MapPut("/messages/{messageID}", UpdateMessageById);
-            chat.MapDelete("/messages/{messageID}", DeleteMessageById);
+            chat.MapPut("messages/{messageID}", UpdateMessageById);
+            chat.MapDelete("messages/{messageID}", DeleteMessageById);
         }
 
         private static async Task GetConnection(HttpContext context, ChatService chatService)
@@ -132,5 +135,45 @@ namespace Endpoints
             await chatService.SendMessageToClients(message);
             return TypedResults.Ok(message);
         }
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        private static async Task<IResult> CreateChannel(IChatRepository chatRepository, CreateOrUpdateChannelPayload payload)
+        {
+            if (string.IsNullOrEmpty(payload.Name))
+            {
+                return TypedResults.BadRequest("Channel Name is required");
+            }
+            var channel = await chatRepository.CreateChannel(payload);
+            return TypedResults.Ok(channel);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        private static async Task<IResult> UpdateChannelById(int id, IChatRepository chatRepository, CreateOrUpdateChannelPayload payload)
+        {
+            if (string.IsNullOrEmpty(payload.Name))
+            {
+                return TypedResults.BadRequest("Channel Name is required");
+            }
+            var channel = await chatRepository.UpdateChannelById(id, payload);
+            if (channel == null)
+            {
+                return TypedResults.NotFound();
+            }
+            return TypedResults.Ok(channel);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        private static async Task<IResult> DeleteChannelById(int id, IChatRepository chatRepository)
+        {
+            var channel = await chatRepository.DeleteChannelById(id);
+            if (channel == null)
+            {
+                return TypedResults.NotFound();
+            }
+            return TypedResults.Ok(channel);
+        }    
     }
 }

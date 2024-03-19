@@ -138,5 +138,46 @@ namespace Repository
 
             return null;
         }
+
+        public async Task<Channel> CreateChannel(CreateOrUpdateChannelPayload payload)
+        {
+            var channel = new Channel
+            {
+                Name = payload.Name
+            };
+
+            await _context.Channels.AddAsync(channel);
+            await _context.SaveChangesAsync();
+
+            return channel;
+        }
+
+        public async Task<Channel> UpdateChannelById(int id, CreateOrUpdateChannelPayload payload)
+        {
+            var channel = await _context.Channels.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (channel != null)
+            {
+                channel.Name = payload.Name;
+                await _context.SaveChangesAsync();
+                return channel;
+            }
+
+            return null;
+        }
+
+        public async Task<Channel> DeleteChannelById(int id)
+        {
+            var channel = await _context.Channels.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (channel != null)
+            {
+                _context.Channels.Remove(channel);
+                await _context.SaveChangesAsync();
+                return channel;
+            }
+
+            return null;
+        }
     }
 }
