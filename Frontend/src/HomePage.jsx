@@ -13,7 +13,7 @@ export default function HomePage()
     // GET channels
     useEffect(() =>
     {
-        fetch("https://localhost:7006/chat/channels")
+        fetch("http://localhost:5007/chat/channels")
         .then((response) => response.json())
         .then((data) => setChannels(data))
     }, [])
@@ -21,7 +21,7 @@ export default function HomePage()
     // GET users
     useEffect(() =>
     {
-        fetch("https://localhost:7006/chat/users")
+        fetch("http://localhost:5007/chat/users")
         .then((response) => response.json())
         .then((data) => setUsers(data))
     }, [])
@@ -41,7 +41,7 @@ export default function HomePage()
 
     return (
         <>
-        <h1>HomePage</h1>
+        <h1>Chat Application</h1>
         <ul>
             {channels.map((channel, index) =>
             (
@@ -55,8 +55,8 @@ export default function HomePage()
 
         <UserContext.Provider value={{users}}>
             <Routes>
-                <Route path="/users/:userId" element={<ProfilePage updateUsers={updateUsers}/>}/>
                 <Route path='/channel/:channelId' element={<ChannelPage channels={channels}/>}/>
+                <Route path="/users/:userId" element={<ProfilePage updateUsers={updateUsers}/>}/>
             </Routes>
         </UserContext.Provider>
         </>
