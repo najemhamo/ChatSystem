@@ -5,14 +5,17 @@ export default function SendMessage(props)
 {
     const {updateMessages} = props
     const {channelId} = useParams()
-    const [newMessage, setNewMessage] = useState({})
+    const [newMessage, setNewMessage] = useState({messageText: ""})
     const [createMessage, setCreateMessage] = useState({})
+    const [socket] = useState(new WebSocket('ws://localhost:5007/chat'))
 
     useEffect(() =>
     {
         if (!createMessage.messageText)
-            return
+        return
 
+        socket.send(JSON.stringify({ type: "message", content: createMessage.messageText }));
+    
         const postOptions =
         {
             method: "POST",
@@ -21,9 +24,23 @@ export default function SendMessage(props)
             },
             body: JSON.stringify(createMessage)
         }
-
-        fetch(`https://localhost:7006/chat/users/${1}/channels/${channelId}/message`, postOptions)
+        
+        fetch(`http://localhost:5007/chat/users/1/channels/${channelId}/message`, postOptions)
     }, [createMessage])
+
+    socket.onmessage = function (event)
+    {
+        if (JSON.parse(event.data).content.length === 0)
+            return
+
+        const message =
+        {
+            messageText: JSON.parse(event.data).content,
+            channelId: channelId,
+            userId: 1
+        }
+        updateMessages({message})
+    }
 
     const handleInput = (event) =>
     {
@@ -32,19 +49,17 @@ export default function SendMessage(props)
 
     const handleSend = () =>
     {
-        if (!newMessage.messageText || newMessage.messageText.length === 0)
+        if (newMessage.messageText.length === 0)
             return
 
         const message = {...newMessage, channelId: channelId, userId: 1}
-
         setCreateMessage(message)
-        updateMessages({message})
         setNewMessage({messageText: ""})
     }
 
     return (
         <>
-        <input type="text" placeholder="New message" onChange={handleInput} value={newMessage.text}></input>
+        <input type="text" placeholder="New message" onChange={handleInput} value={newMessage.messageText}></input>
         <button onClick={handleSend}>Send</button>
         </>
     )

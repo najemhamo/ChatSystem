@@ -16,16 +16,14 @@ export default function ProfilePage(props)
     const [newUser, setNewUser] = useState(INITIAL_USER)
     const [updateUser, setUpdateUser] = useState({})
     const [user, setUser] = useState({})
-    const ownUserProfile = parseInt(userId) === 1
+    const ownUserProfile = parseInt(userId) === 2
 
     // GET user by id
     useEffect(() =>
     {
-        fetch(`https://localhost:7006/chat/users/${userId}`)
+        fetch(`http://localhost:5007/chat/users/${userId}`)
         .then((response) => response.json())
-        .then((data) => {
-            setUser(data)
-        })
+        .then((data) => setUser(data))
     }, [])
 
     // PUT new user
@@ -43,7 +41,7 @@ export default function ProfilePage(props)
             body: JSON.stringify(updateUser)
         }
 
-        fetch(`https://localhost:7006/chat/users/${userId}`, putOptions)
+        fetch(`http://localhost:5007/chat/users/${userId}`, putOptions)
 
     }, [updateUser])
 
