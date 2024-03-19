@@ -10,6 +10,7 @@ namespace Services
     {
         private readonly List<WebSocket> _sockets = new();
 
+        // Method to handle WebSocket connection and broadcast messages
         public async Task HandleWebSocketConnection(WebSocket socket)
         {
             _sockets.Add(socket);
@@ -41,6 +42,7 @@ namespace Services
             }
         }
 
+        // Method to send message to all connected clients
         public async Task SendMessageToClients(Message message)
         {
             var jsonMessage = JsonSerializer.Serialize(message);
