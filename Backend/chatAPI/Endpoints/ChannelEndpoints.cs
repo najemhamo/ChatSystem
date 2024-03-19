@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Repository;
 using Services;
@@ -16,7 +17,7 @@ namespace Endpoints
             chat.MapGet("/users", GetAllUsers);
             chat.MapGet("/users/{id}", GetUserById);
             chat.MapPut("/users/{id}", UpdateUserById);
-            chat.MapPost("users/{userId}/channels/{channelID}/message", CreateMessage);
+            chat.MapPost("users/{userID}/channels/{channelID}/message", CreateMessage);
         }
 
         private static async Task GetConnection(HttpContext context, ChatService chatService)
@@ -97,9 +98,10 @@ namespace Endpoints
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        private static async Task<IResult> CreateMessage(IChatRepository chatRepository, CreateMessagePayload payload)
+        private static async Task<IResult> CreateMessage(IChatRepository chatRepository, CreateMessagePayload payload, ChatService chatService)
         {
             var message = await chatRepository.CreateMessage(payload);
+            await chatService.SendMessageToClients(message);
             return TypedResults.Ok(message);
         }
     }
