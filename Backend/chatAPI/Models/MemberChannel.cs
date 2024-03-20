@@ -2,15 +2,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
-    [Table("user_channels")]
-    public class UserChannel
+    [Table("member_channels")]
+    public class MemberChannel
     {
         [Column("id")]
         public int Id { get; set; }
         
-        [Column("user_id")]
-        public int UserId { get; set; }
-        public User User { get; set; }
+        [Column("member_id")]
+        public int MemberId { get; set; }
+        public Member Member { get; set; }
         
         [Column("channel_id")]
         public int ChannelId { get; set; }

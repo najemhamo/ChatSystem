@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using DataContext;
@@ -19,60 +20,60 @@ namespace Repository
             return await _context.Channels.ToListAsync();
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<Member>> GetMembers()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Members.ToListAsync();
         }
 
-        public async Task<User> GetUserById(int id, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations)
+        public async Task<Member> GetMemberById(int id, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations)
         {
             if (preloadPolicy == PreloadPolicy.PreloadRelations)
             {
-                var user = await _context.Users
+                var member = await _context.Members
                     .Include(u => u.Messages)
-                    .Include(u => u.UserChannels)
+                    .Include(u => u.MemberChannels)
                     .FirstOrDefaultAsync(u => u.Id == id);
 
-                if (user != null)
+                if (member != null)
                 {
-                    return user;
+                    return member;
                 }
             }
             else
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+                var member = await _context.Members.FirstOrDefaultAsync(u => u.Id == id);
 
-                if (user != null)
+                if (member != null)
                 {
-                    return user;
+                    return member;
                 }
             }
 
-            // Return null if user is not found
+            // Return null if member is not found
             return null;
         }
 
-        public async Task<User?> UpdateUserById(int id, UpdateUserPayload payload)
+        public async Task<Member?> UpdateMemberById(int id, UpdateMemberPayload payload)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            var member = await _context.Members.FirstOrDefaultAsync(u => u.Id == id);
             
-            // Check if user is null or if any of the payload fields are empty
-            if (user == null || string.IsNullOrEmpty(payload.UserName) || string.IsNullOrEmpty(payload.Name))
+            // Check if member is null or if any of the payload fields are empty
+            if (member == null || string.IsNullOrEmpty(payload.UserName) || string.IsNullOrEmpty(payload.Name))
             {
                 return null;
             }
 
-            // Update user fields
-            if (user != null)
+            // Update member fields
+            if (member != null)
             {
-                user.Name = payload.Name;
-                user.UserName = payload.UserName;
-                user.AboutMe = payload.AboutMe;
-                user.ProfilePicture = payload.ProfilePicture;
+                member.Name = payload.Name;
+                member.UserName = payload.UserName;
+                member.AboutMe = payload.AboutMe;
+                member.ProfilePicture = payload.ProfilePicture;
 
                 await _context.SaveChangesAsync();
 
-                return user;
+                return member;
             }
 
             return null;
@@ -83,7 +84,7 @@ namespace Repository
             if (preloadPolicy == PreloadPolicy.PreloadRelations)
             {
                 return await _context.Messages
-                    .Include(m => m.User)
+                    .Include(m => m.Member)
                     .Where(m => m.ChannelId == channelId)
                     .ToListAsync();
             }
@@ -101,7 +102,7 @@ namespace Repository
             var message = new Message
             {
                 MessageText = payload.MessageText,
-                UserId = payload.UserId,
+                MemberId = payload.MemberId,
                 ChannelId = payload.ChannelId
             };
 
@@ -179,5 +180,52 @@ namespace Repository
 
             return null;
         }
+
+        public ApplicationUser? GetUser(string userName)
+        {
+            return _context.Users.FirstOrDefault(u => u.UserName == userName);
+        }
+
+        public async Task<MemberChannel> AddMemberToChannel(int memberId, int channelId)
+        {
+            var memberChannel = new MemberChannel
+            {
+                MemberId = memberId,
+                ChannelId = channelId
+            };
+
+            await _context.MemberChannels.AddAsync(memberChannel);
+            await _context.SaveChangesAsync();
+
+            return memberChannel;
+        }
+        public async Task<Member> CreateMember(CreateMemberPayload payload)
+        {
+            var member = new Member
+            {
+                Name = payload.Name,
+                UserName = payload.UserName,
+                Email = payload.Email,
+                Password = payload.Password,
+                AboutMe = payload.AboutMe,
+                ProfilePicture = payload.ProfilePicture,
+                Role = payload.Role
+            };
+
+            await _context.Members.AddAsync(member);
+            await _context.SaveChangesAsync();
+
+             // Get all channels from the database
+            var channels = await _context.Channels.ToListAsync();
+
+            // Add the new member to all channels
+            foreach (var channel in channels)
+            {
+                await AddMemberToChannel(member.Id, channel.Id);
+            }
+            return member;
+        }
+
     }
 }
+

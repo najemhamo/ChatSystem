@@ -11,6 +11,6 @@ namespace Models
         [Column("name")]
         public string Name { get; set; }
         public ICollection<Message> Messages { get; set; }
-        public ICollection<UserChannel> UserChannels { get; set; }
+        public ICollection<MemberChannel> MemberChannels { get; set; }
     }
 }
