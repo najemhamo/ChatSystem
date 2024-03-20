@@ -17,10 +17,10 @@ namespace Endpoints
             chat.MapPut("channels/{id}", UpdateChannelById);
             chat.MapDelete("channels/{id}", DeleteChannelById);
             chat.MapGet("channels/{id}/messages", GetMessagesByChannelId);
-            chat.MapGet("users", GetAllUsers);
-            chat.MapGet("users/{id}", GetUserById);
-            chat.MapPut("users/{id}", UpdateUserById);
-            chat.MapPost("users/{userID}/channels/{channelID}/message", CreateMessage);
+            chat.MapGet("members", GetAllMembers);
+            chat.MapGet("members/{id}", GetMemberById);
+            chat.MapPut("members/{id}", UpdateMemberById);
+            chat.MapPost("members/{memberID}/channels/{channelID}/message", CreateMessage);
             chat.MapPut("messages/{messageID}", UpdateMessageById);
             chat.MapDelete("messages/{messageID}", DeleteMessageById);
         }
@@ -50,17 +50,17 @@ namespace Endpoints
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        private static async Task<IResult> GetAllUsers(IChatRepository chatRepository)
+        private static async Task<IResult> GetAllMembers(IChatRepository chatRepository)
         {
-            var users = await chatRepository.GetUsers();
-            return TypedResults.Ok(users);
+            var members = await chatRepository.GetMembers();
+            return TypedResults.Ok(members);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        private static async Task<IResult> GetUserById(IChatRepository chatRepository, int id)
+        private static async Task<IResult> GetMemberById(IChatRepository chatRepository, int id)
         {
-            var user = await chatRepository.GetUserById(id);
+            var user = await chatRepository.GetMemberById(id);
             if (user == null)
             {
                 return TypedResults.NotFound();
@@ -70,7 +70,7 @@ namespace Endpoints
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        private static async Task<IResult> UpdateUserById(int id, IChatRepository chatRepository, UpdateUserPayload payload)
+        private static async Task<IResult> UpdateMemberById(int id, IChatRepository chatRepository, UpdateMemberPayload payload)
         {
             if (string.IsNullOrEmpty(payload.UserName))
             {
@@ -80,12 +80,12 @@ namespace Endpoints
             {
                 return TypedResults.BadRequest("Name is required");
             }
-            var user = await chatRepository.UpdateUserById(id, payload);
-            if (user == null)
+            var member = await chatRepository.UpdateMemberById(id, payload);
+            if (member == null)
             {
                 return TypedResults.NotFound();
             }
-            return TypedResults.Ok(user);
+            return TypedResults.Ok(member);
         }
 
 
