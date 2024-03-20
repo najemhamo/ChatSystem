@@ -15,16 +15,16 @@ export default function SendMessage(props)
 
         socket.send(JSON.stringify({ type: "messageAdd", content: createMessage.messageText }));
     
-        const postOptions =
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(createMessage)
-        }
+        // const postOptions =
+        // {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify(createMessage)
+        // }
         
-        fetch(`http://localhost:5007/chat/users/1/channels/${channelId}/message`, postOptions)
+        // fetch(`http://localhost:5007/chat/users/1/channels/${channelId}/message`, postOptions)
     }, [createMessage])
 
     const handleInput = (event) =>

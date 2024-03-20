@@ -20,16 +20,16 @@ export default function MessageItem(props)
 
         socket.send(JSON.stringify({ type: "messageUpdate", content: messageUpdate.messageText, id: messageUpdate.id }));
     
-        const putOptions =
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(messageUpdate)
-        }
+        // const putOptions =
+        // {
+        //     method: "PUT",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify(messageUpdate)
+        // }
         
-        fetch(`http://localhost:5007/chat/messages/${messageUpdate.id}`, putOptions)
+        // fetch(`http://localhost:5007/chat/messages/${messageUpdate.id}`, putOptions)
     }, [messageUpdate])
 
     // DELETE message

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 
 export default function ProfilePage(props)
 {
-    const {updateUsers} = props
+    const {socket, updateUsers} = props
     const {userId} = useParams()
     const [buttonText, setButtonText] = useState("Edit")
 
@@ -32,19 +32,33 @@ export default function ProfilePage(props)
         if (!updateUser.userName)
             return
 
-        const putOptions =
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(updateUser)
-        }
+        socket.send(JSON.stringify({ type: "userUpdate", content: updateUser }));
 
-        fetch(`http://localhost:5007/chat/users/${userId}`, putOptions)
+        // const putOptions =
+        // {
+        //     method: "PUT",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify(updateUser)
+        // }
+
+        // fetch(`http://localhost:5007/chat/users/${userId}`, putOptions)
 
     }, [updateUser])
 
+    // Socket
+    socket.onmessage = function (event)
+    {
+        const messageObj = JSON.parse(event.data)
+        console.log("PROFILE PAGE SOCKET")
+
+        if (messageObj.type === "userUpdate")
+        {
+            const updatedUser = {...messageObj.content}
+            updateUsers({updatedUser})   
+        }
+    }
 
     const handleClick = () =>
     {

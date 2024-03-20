@@ -5,10 +5,10 @@ import { useParams } from "react-router-dom"
 
 export default function ChannelPage(props)
 {
-    const {channels} = props
+    const {channels, socket} = props
     const {channelId} = useParams()
     const [messages, setMessages] = useState([])
-    const [socket] = useState(new WebSocket('ws://localhost:5007/chat'))
+    const channel = channels[channelId - 1]
 
     // GET messages
     useEffect(() =>
@@ -18,9 +18,13 @@ export default function ChannelPage(props)
         .then((data) => setMessages(data))
     }, [])
 
+    // Socket
     socket.onmessage = function (event)
     {
         const messageObj = JSON.parse(event.data)
+
+        console.log("CHANNEL PAGE SOCKET")
+
 
         if (messageObj.type === "messageAdd")
         {
@@ -51,7 +55,7 @@ export default function ChannelPage(props)
         }
     }
 
-    const channel = channels[channelId - 1]
+    // MESSAGES
     const addMessage = (data) =>
     {
         if (messages.length === 0)
