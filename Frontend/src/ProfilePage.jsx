@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom"
 
 export default function ProfilePage(props)
 {
-    const {updateUsers} = props
-    const {userId} = useParams()
+    const {socket, updateUsers, updateChannel, deleteChannel} = props
+    const {memberId} = useParams()
     const [buttonText, setButtonText] = useState("Edit")
 
     const INITIAL_USER =
@@ -16,12 +16,12 @@ export default function ProfilePage(props)
     const [newUser, setNewUser] = useState(INITIAL_USER)
     const [updateUser, setUpdateUser] = useState({})
     const [user, setUser] = useState({})
-    const ownUserProfile = parseInt(userId) === 2
+    const ownUserProfile = parseInt(memberId) === 1
 
     // GET user by id
     useEffect(() =>
     {
-        fetch(`http://localhost:5007/chat/users/${userId}`)
+        fetch(`http://localhost:5007/chat/members/${memberId}`)
         .then((response) => response.json())
         .then((data) => setUser(data))
     }, [])
@@ -32,6 +32,8 @@ export default function ProfilePage(props)
         if (!updateUser.userName)
             return
 
+        socket.send(JSON.stringify({ type: "userUpdate", content: updateUser }));
+
         const putOptions =
         {
             method: "PUT",
@@ -41,10 +43,37 @@ export default function ProfilePage(props)
             body: JSON.stringify(updateUser)
         }
 
-        fetch(`http://localhost:5007/chat/users/${userId}`, putOptions)
+        fetch(`http://localhost:5007/chat/members/${memberId}`, putOptions)
 
     }, [updateUser])
 
+    // Socket
+    socket.onmessage = function (event)
+    {
+        const messageObj = JSON.parse(event.data)
+        console.log("PROFILE PAGE SOCKET")
+
+        if (messageObj.type === "userUpdate")
+        {
+            const updatedUser = {...messageObj.content}
+            updateUsers({updatedUser})   
+        }
+
+        if (messageObj.type === "channelUpdate")
+        {
+            const updatedChannel =
+            {
+                name: messageObj.content,
+                id: messageObj.id
+            }
+            updateChannel({updatedChannel})
+        }
+        
+        else if (messageObj.type === "channelDelete")
+        {
+            deleteChannel({id: messageObj.id})
+        }
+    }
 
     const handleClick = () =>
     {
@@ -66,8 +95,9 @@ export default function ProfilePage(props)
 
             setUpdateUser(updatedUser)
             updateUsers({updatedUser})
-            setButtonText("Edit")
             setUser(updatedUser)
+            setNewUser(INITIAL_USER)
+            setButtonText("Edit")
         }
         else
             setButtonText("Save")

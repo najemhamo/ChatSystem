@@ -40,3 +40,41 @@
 .read-the-docs {
   color: #888;
 }
+
+.container {
+  /* width: 100vw;
+    height: 100vh; */
+  display: flex;
+  flex-direction: column;
+}
+
+.container-main {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+li {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar {
+  width: 200px;
+    height: 100%;
+    /* fix the sidebar to be 100 viewport minus the header */
+    max-height: calc(100vh - 60px);
+    display: inline;
+}
+
+.channelButtons {
+}
+
+/* .fa-bars {
+  margin-left: 30px;
+}
+
+.fa-trash {
+  margin-right: 5px;
+} */
