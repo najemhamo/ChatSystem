@@ -18,16 +18,16 @@ export default function ChannelItem(props)
 
         socket.send(JSON.stringify({ type: "channelUpdate", content: channelUpdate.name, id: channelUpdate.id }));
     
-        // const putOptions =
-        // {
-        //     method: "PUT",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify(channelUpdate)
-        // }
+        const putOptions =
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(channelUpdate)
+        }
         
-        // fetch(`http://localhost:5007/chat/channels/${channelUpdate.id}`, putOptions)
+        fetch(`http://localhost:5007/chat/channels/${channelUpdate.id}`, putOptions)
     }, [channelUpdate])
 
     // DELETE channel
@@ -39,16 +39,16 @@ export default function ChannelItem(props)
         socket.send(JSON.stringify({ type: "channelDelete", content: "", id: channelDelete.id }));
         deleteChannel({id: channelDelete.id})
 
-        // const deleteOptions =
-        // {
-        //     method: "DELETE",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify(channelDelete)
-        // }
+        const deleteOptions =
+        {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(channelDelete)
+        }
         
-        // fetch(`http://localhost:5007/chat/channels/${channelDelete.id}?id=${channelDelete.id}`, deleteOptions)
+        fetch(`http://localhost:5007/chat/channels/${channelDelete.id}?id=${channelDelete.id}`, deleteOptions)
     }, [channelDelete])
 
     const handleInput = (event) =>
@@ -58,11 +58,8 @@ export default function ChannelItem(props)
 
     const handleEdit = () =>
     {
-        if (buttonText === "Save")
+        if (buttonText === "Save" && newChannel.name && newChannel.name.length > 0)
         {
-            if (!newChannel.name || newChannel.name.length === 0)
-                return
-
             let updatedChannel = channel
             updatedChannel.name = newChannel.name
 
@@ -87,8 +84,8 @@ export default function ChannelItem(props)
             {buttonText === "Save" && <input type="text" placeholder={channel.name} onChange={handleInput} value={newChannel.name}></input>}
                 
             <div className="channelButtons">
-                <button className="fa fa-bars" onClick={handleEdit}></button>
-                <button className="fa fa-trash" onClick={handleDelete}></button>
+                <button onClick={handleEdit}><i className="fa fa-bars"></i> {buttonText}</button>
+                <button onClick={handleDelete}><i className="fa fa-trash"></i> Delete</button>
             </div>
         </>
     )

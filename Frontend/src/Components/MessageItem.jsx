@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { UserContext } from "../HomePage"
+import { UserContext } from "../App"
 
 export default function MessageItem(props)
 {
@@ -20,16 +20,16 @@ export default function MessageItem(props)
 
         socket.send(JSON.stringify({ type: "messageUpdate", content: messageUpdate.messageText, id: messageUpdate.id }));
     
-        // const putOptions =
-        // {
-        //     method: "PUT",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify(messageUpdate)
-        // }
+        const putOptions =
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(messageUpdate)
+        }
         
-        // fetch(`http://localhost:5007/chat/messages/${messageUpdate.id}`, putOptions)
+        fetch(`http://localhost:5007/chat/messages/${messageUpdate.id}`, putOptions)
     }, [messageUpdate])
 
     // DELETE message
@@ -40,6 +40,9 @@ export default function MessageItem(props)
     
         socket.send(JSON.stringify({ type: "messageDelete", content: "", id: message.id }));
         deleteMessage({id: messageDelete.id})
+
+
+        console.log("DELETE MESSAGE", messageDelete)
 
         const deleteOptions =
         {
@@ -65,6 +68,7 @@ export default function MessageItem(props)
 
             setMessageUpdate(updatedMessage)
             updateMessage({updatedMessage})
+            setNewMessage([])
             setButtonText("Edit")
         }
         else

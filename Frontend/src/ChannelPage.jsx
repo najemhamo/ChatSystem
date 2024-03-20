@@ -5,9 +5,10 @@ import { useParams } from "react-router-dom"
 
 export default function ChannelPage(props)
 {
-    const {channels, socket} = props
+    const {channels, socket, updateChannel, deleteChannel} = props
     const {channelId} = useParams()
     const [messages, setMessages] = useState([])
+    const [messagesGET, setMessagesGET] = useState(false)
     const channel = channels[channelId - 1]
 
     // GET messages
@@ -16,26 +17,17 @@ export default function ChannelPage(props)
         fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
         .then((response) => response.json())
         .then((data) => setMessages(data))
-    }, [])
+    }, [messagesGET])
 
     // Socket
     socket.onmessage = function (event)
     {
         const messageObj = JSON.parse(event.data)
 
-        console.log("CHANNEL PAGE SOCKET")
-
+        console.log("CHANNEL RECE", messageObj.type)
 
         if (messageObj.type === "messageAdd")
-        {
-            const message =
-            {
-                messageText: messageObj.content,
-                channelId: channelId,
-                userId: 1
-            }
-            addMessage({message})
-        }
+            addMessage()
 
         else if (messageObj.type === "messageUpdate")
         {
@@ -53,23 +45,27 @@ export default function ChannelPage(props)
         {
             deleteMessage({id: messageObj.id})
         }
+
+        if (messageObj.type === "channelUpdate")
+        {
+            const updatedChannel =
+            {
+                name: messageObj.content,
+                id: messageObj.id
+            }
+            updateChannel({updatedChannel})
+        }
+        
+        else if (messageObj.type === "channelDelete")
+        {
+            deleteChannel({id: messageObj.id})
+        }
     }
 
     // MESSAGES
-    const addMessage = (data) =>
+    const addMessage = () =>
     {
-        if (messages.length === 0)
-            setMessages(messageList => [...messageList, 
-            {
-                ...data.message,
-                id: messageList[messageList.length - 1].id + 1
-            }])
-        else
-            setMessages([...messages, 
-            {
-                ...data.message,
-                id: messages[messages.length - 1].id + 1
-            }])        
+        setMessagesGET(!messagesGET) 
     }
 
     const updateMessage = (data) =>
