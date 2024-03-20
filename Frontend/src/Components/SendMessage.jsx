@@ -3,18 +3,17 @@ import { useParams } from "react-router-dom"
 
 export default function SendMessage(props)
 {
-    const {updateMessages} = props
+    const {socket, addMessage} = props
     const {channelId} = useParams()
     const [newMessage, setNewMessage] = useState({messageText: ""})
     const [createMessage, setCreateMessage] = useState({})
-    const [socket] = useState(new WebSocket('ws://localhost:5007/chat'))
 
     useEffect(() =>
     {
         if (!createMessage.messageText)
         return
 
-        socket.send(JSON.stringify({ type: "message", content: createMessage.messageText }));
+        socket.send(JSON.stringify({ type: "messageAdd", content: createMessage.messageText }));
     
         const postOptions =
         {
@@ -28,20 +27,6 @@ export default function SendMessage(props)
         fetch(`http://localhost:5007/chat/users/1/channels/${channelId}/message`, postOptions)
     }, [createMessage])
 
-    socket.onmessage = function (event)
-    {
-        if (JSON.parse(event.data).content.length === 0)
-            return
-
-        const message =
-        {
-            messageText: JSON.parse(event.data).content,
-            channelId: channelId,
-            userId: 1
-        }
-        updateMessages({message})
-    }
-
     const handleInput = (event) =>
     {
         setNewMessage({messageText: event.target.value})
@@ -54,6 +39,7 @@ export default function SendMessage(props)
 
         const message = {...newMessage, channelId: channelId, userId: 1}
         setCreateMessage(message)
+        addMessage({message})
         setNewMessage({messageText: ""})
     }
 
