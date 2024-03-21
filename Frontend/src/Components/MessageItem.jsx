@@ -1,12 +1,14 @@
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../HomePage"
 import { AuthContext } from "../App"
+import { useNavigate } from "react-router-dom"
 
 export default function MessageItem(props)
 {
     const {message, socket, updateMessage, deleteMessage} = props
     const {users} = useContext(UserContext)
     const {user} = useContext(AuthContext)
+    const navigate = useNavigate()
     const messageUser = users[message.memberId - 1]
 
     const [buttonText, setButtonText] = useState("Edit")
@@ -94,7 +96,7 @@ export default function MessageItem(props)
 
         <div>
             <div>
-                <p className="usernameText">{messageUser && messageUser.userName}</p>
+                <p className="usernameText" onClick={() => navigate(`/users/${messageUser.id}`)}>{messageUser && messageUser.userName}</p>
                 <p className="time">{message.createdAt}</p>
             </div>
             

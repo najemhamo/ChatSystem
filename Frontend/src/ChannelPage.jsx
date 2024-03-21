@@ -17,7 +17,7 @@ export default function ChannelPage(props)
         fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
         .then((response) => response.json())
         .then((data) => setMessages(data))
-    }, [messagesGET])
+    }, [messagesGET, channelId])
 
     // Socket
     socket.onmessage = function (event)
