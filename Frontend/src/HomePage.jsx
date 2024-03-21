@@ -9,10 +9,9 @@ export const UserContext = createContext()
 
 export default function HomePage(props)
 {
-    const {user, logout} = props
+    const {user, logout, users, setUsers} = props
     const [socket] = useState(new WebSocket('ws://localhost:5007/chat'))
     const [channels, setChannels] = useState([])
-    const [users, setUsers] = useState([])
     const navigate = useNavigate()
 
     // GET channels
@@ -21,14 +20,6 @@ export default function HomePage(props)
         fetch("http://localhost:5007/chat/channels")
         .then((response) => response.json())
         .then((data) => setChannels(data))
-    }, [])
-
-    // GET users
-    useEffect(() =>
-    {
-        fetch("http://localhost:5007/chat/members")
-        .then((response) => response.json())
-        .then((data) => setUsers(data))
     }, [])
 
     // Users
@@ -96,7 +87,7 @@ export default function HomePage(props)
         </div>
 
         <div>
-            <p onClick={() => navigate(`/users/${user.id}`)}>{user && user.userName}</p>
+            <p onClick={() => navigate(`/users/${user[0].id}`)}>{user[0] && user[0].userName}</p>
         </div>
 
         <UserContext.Provider value={{users}}>

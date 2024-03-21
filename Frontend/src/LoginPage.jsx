@@ -18,8 +18,9 @@ const INITIAL_USER =
   password: "",
 }
 
-export default function LoginPage() {
+export default function LoginPage(props) {
 
+  const {users} = props
   const { login } = useContext(AuthContext)
   const [userForm, setUserForm] = useState(INITIAL_USER)
   const [userFormRegister, setUserFormRegister] = useState(INITIAL_USER_REGISTER)
@@ -27,7 +28,7 @@ export default function LoginPage() {
   const [userLogin, setUserLogin] = useState({})
   const [userRegister, setUserRegister] = useState({})
 
-  const [messageLogin, setMessageLogin] = useState([])
+  const [messageLogin, setMessageLogin] = useState("")
   const [messageRegister, setMessageRegister] = useState([])
 
   // Register
@@ -75,11 +76,12 @@ export default function LoginPage() {
     fetch(`http://localhost:5007/Authentication/login`, postOptions)
     .then(response => 
     {
-        if (!response.ok) return response.text().then(text => setMessageLogin(JSON.parse(text)))
+        if (!response.ok) return response.text().then(text => setMessageLogin(text))
         else return response.json().then((data) =>
         {
-            login(data, data.token)
-            console.log("DATA", data)
+          console.log("DATA", data)
+          const tmpUser = users.filter((user) => user.userName === data.userName)
+          login(tmpUser, data.token)
         })
     })
   }, [userLogin])
@@ -110,19 +112,25 @@ export default function LoginPage() {
 
   return (
     <>
-        <h2>Register</h2>
-        <input type="text" name="name" placeholder="name" value={userFormRegister.name} onChange={handleInputRegister}></input>
-        <input type="text" name="userName" placeholder="userName" value={userFormRegister.userName} onChange={handleInputRegister}></input>
-        <input type="text" name="email" placeholder="email" value={userFormRegister.email} onChange={handleInputRegister}></input>
-        <input type="password" name="password" placeholder="password" value={userFormRegister.password} onChange={handleInputRegister}></input>
-        {messageRegister.map((message, index) => (<p key={index}>{message.description}</p>))}
-        <button onClick={handleClickRegister}>Register</button>
+        <div className="register">
+          <h2 className="registerInputs registerH2">Register</h2>
+          <input className="registerInputs" type="text" name="name" placeholder="Name" value={userFormRegister.name} onChange={handleInputRegister}></input>
+          <input className="registerInputs" type="text" name="userName" placeholder="UserName" value={userFormRegister.userName} onChange={handleInputRegister}></input>
+          <input className="registerInputs" type="text" name="email" placeholder="Email" value={userFormRegister.email} onChange={handleInputRegister}></input>
+          <input className="registerInputs" type="password" name="password" placeholder="Password" value={userFormRegister.password} onChange={handleInputRegister}></input>
+          {messageRegister.map((message, index) => (<p className="registerInputs" key={index}>{message.description}</p>))}
+          <button className="registerInputs registerBtn" onClick={handleClickRegister}>Register</button>
+        </div>
 
-        <h2>Login</h2>
-        <input type="text" name="userName" placeholder="userName" value={userForm.userName} onChange={handleInput}></input>
-        <input type="password" name="password" placeholder="password" value={userForm.password} onChange={handleInput}></input>
-        {messageLogin.map((message, index) => (<p key={index}>{message.description}</p>))}
-        <button onClick={handleClick}>Login</button>
+        <div className="register" >
+          <h2 className="registerInputs loginH2">Login</h2>
+          <div className="loginInput">
+            <input className="registerInputs" type="text" name="userName" placeholder="UserName" value={userForm.userName} onChange={handleInput}></input>
+            <input className="registerInputs" type="password" name="password" placeholder="Password" value={userForm.password} onChange={handleInput}></input>
+            <p className="registerInputs">{messageLogin}</p>
+          </div>
+          <button className="registerInputs loginBth" onClick={handleClick}>Login</button>
+        </div>
     </>
   );
 }
