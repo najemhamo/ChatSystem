@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import { AuthContext } from "../App"
 
 export default function SendMessage(props)
 {
     const {socket, addMessage} = props
+    const {user} = useContext(AuthContext)
     const {channelId} = useParams()
     const [newMessage, setNewMessage] = useState({messageText: ""})
     const [createMessage, setCreateMessage] = useState({})
@@ -39,7 +41,7 @@ export default function SendMessage(props)
         if (newMessage.messageText.length === 0)
             return
 
-        const message = {...newMessage, channelId: channelId, memberId: 1}
+        const message = {...newMessage, channelId: channelId, memberId: user[0].id}
         setCreateMessage(message)
         setNewMessage({messageText: ""})
     }

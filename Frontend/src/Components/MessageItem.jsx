@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../HomePage"
+import { AuthContext } from "../App"
 
 export default function MessageItem(props)
 {
     const {message, socket, updateMessage, deleteMessage} = props
     const {users} = useContext(UserContext)
-    const user = users[message.userId - 1]
+    const {user} = useContext(AuthContext)
+    const messageUser = users[message.memberId - 1]
 
     const [buttonText, setButtonText] = useState("Edit")
     const [newMessage, setNewMessage] = useState([])
@@ -40,9 +42,6 @@ export default function MessageItem(props)
     
         socket.send(JSON.stringify({ type: "messageDelete", content: "", id: message.id }));
         deleteMessage({id: messageDelete.id})
-
-
-        console.log("DELETE MESSAGE", messageDelete)
 
         const deleteOptions =
         {
@@ -84,18 +83,18 @@ export default function MessageItem(props)
     {
         setNewMessage({messageText: event.target.value})
     }
-
+    
     return (
     <>
         <div>
-            {buttonText === "Edit" && <p>{message && message.messageText} {user && user.userName}</p>}
+            {buttonText === "Edit" && <p>{message && message.messageText} {messageUser && messageUser.userName}</p>}
             {buttonText === "Save" && <input type="text" placeholder={message.messageText} onChange={handleInput}></input>}
 
-            <button onClick={handleEdit}>{buttonText}</button>
-            <button onClick={handleDelete}>Delete</button>
-
-            {/* {user.id === 1 && <button onClick={handleEdit}>{buttonText}</button>} */}
-            {/* {user.id === 1 && <button>Delete</button>} */}
+            {user[0] && messageUser && user[0].id === messageUser.id &&
+            <>
+                <button onClick={handleEdit}>{buttonText}</button>
+                <button onClick={handleDelete}>Delete</button>
+            </>}
         </div>
     </>
     )
