@@ -1,16 +1,19 @@
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../HomePage"
+import { AuthContext } from "../App"
 
 export default function MessageItem(props)
 {
     const {message, socket, updateMessage, deleteMessage} = props
     const {users} = useContext(UserContext)
-    const user = users[message.userId - 1]
+    const {user} = useContext(AuthContext)
+    const messageUser = users[message.memberId - 1]
 
     const [buttonText, setButtonText] = useState("Edit")
     const [newMessage, setNewMessage] = useState([])
     const [messageUpdate, setMessageUpdate] = useState({})
     const [messageDelete, setMessageDelete] = useState({})
+    const ownMessage = user[0] && messageUser && user[0].id === messageUser.id ? true : false
 
     // UPDATE message
     useEffect(() =>
@@ -41,9 +44,6 @@ export default function MessageItem(props)
         socket.send(JSON.stringify({ type: "messageDelete", content: "", id: message.id }));
         deleteMessage({id: messageDelete.id})
 
-
-        console.log("DELETE MESSAGE", messageDelete)
-
         const deleteOptions =
         {
             method: "DELETE",
@@ -60,8 +60,11 @@ export default function MessageItem(props)
     {
         if (buttonText === "Save")
         {
-            if (newMessage.messageText.length === 0)
+            if (!newMessage.messageText || newMessage.messageText.length === 0)
+            {
+                setButtonText("Edit")
                 return
+            }
 
             let updatedMessage = message
             updatedMessage.messageText = newMessage.messageText
@@ -84,18 +87,27 @@ export default function MessageItem(props)
     {
         setNewMessage({messageText: event.target.value})
     }
-
+    
     return (
     <>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+
         <div>
-            {buttonText === "Edit" && <p>{message && message.messageText} {user && user.userName}</p>}
-            {buttonText === "Save" && <input type="text" placeholder={message.messageText} onChange={handleInput}></input>}
+            <div>
+                <p className="usernameText">{messageUser && messageUser.userName}</p>
+                <p className="time">{message.createdAt}</p>
+            </div>
+            
+            <div>
+                {buttonText === "Edit" && <p className={ownMessage ? "messageTexting textFix" : "messageTexting"}>{message && message.messageText}</p>}
+                {buttonText === "Save" && <input className={ownMessage ? "messageTexting textFix" : "messageTexting"} type="text" placeholder={message.messageText} onChange={handleInput}></input>}
 
-            <button onClick={handleEdit}>{buttonText}</button>
-            <button onClick={handleDelete}>Delete</button>
-
-            {/* {user.id === 1 && <button onClick={handleEdit}>{buttonText}</button>} */}
-            {/* {user.id === 1 && <button>Delete</button>} */}
+                {ownMessage &&
+                <>
+                    <button className="messageBth messageEdit" onClick={handleEdit}><i className="fa fa-bars"></i></button>
+                    <button className="messageBth" onClick={handleDelete}><i className="fa fa-trash"></i></button>
+                </>}
+            </div>
         </div>
     </>
     )

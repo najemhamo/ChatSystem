@@ -17,7 +17,16 @@ const loadUserDataFromStorage = () =>
 function App() {
   const [authToken, setAuthToken] = useState(localStorage.getItem("authToken") || "");
   const [user, setUser] = useState(loadUserDataFromStorage);
+  const [users, setUsers] = useState([])
   const navigate = useNavigate()
+
+  // GET users
+  useEffect(() =>
+  {
+    fetch("http://localhost:5007/chat/members")
+    .then((response) => response.json())
+    .then((data) => setUsers(data))
+  }, [])
 
   useEffect(() =>
   {
@@ -49,8 +58,8 @@ function App() {
     <>
       <AuthContext.Provider value={{ user, authToken, login, logout }}>
         <Routes>
-          <Route path="/login" element={<LoginPage/>} />
-          <Route path='/*' element={<HomePage user={user} logout={logout}/>}/>
+          <Route path="/login" element={<LoginPage users={users}/>} />
+          <Route path='/*' element={<HomePage user={user} logout={logout} users={users} setUsers={setUsers}/>}/>
         </Routes>
       </AuthContext.Provider>
     </>

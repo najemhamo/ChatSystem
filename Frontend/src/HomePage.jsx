@@ -9,10 +9,9 @@ import PropTypes from "prop-types";
 export const UserContext = createContext();
 
 export default function HomePage(props) {
-  const { user, logout } = props;
+  const { user, logout, users, setUsers } = props;
   const [socket] = useState(new WebSocket("ws://localhost:5007/chat"));
   const [channels, setChannels] = useState([]);
-  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
   // GET channels
@@ -20,13 +19,6 @@ export default function HomePage(props) {
     fetch("http://localhost:5007/chat/channels")
       .then((response) => response.json())
       .then((data) => setChannels(data));
-  }, []);
-
-  // GET users
-  useEffect(() => {
-    fetch("http://localhost:5007/chat/members")
-      .then((response) => response.json())
-      .then((data) => setUsers(data));
   }, []);
 
   // Users
@@ -103,7 +95,6 @@ export default function HomePage(props) {
           </button>
         </div>
       </div>
-
       <UserContext.Provider value={{ users }}>
         <Routes>
           <Route
