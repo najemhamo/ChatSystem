@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { SocketContext } from "../HomePage";
 import PropTypes from "prop-types";
 
 export default function ChannelItem(props) {
-  const { channel, socket, updateChannel, deleteChannel } = props;
+  const { channel } = props;
   const [buttonText, setButtonText] = useState("Edit");
   const [newChannel, setNewChannel] = useState([]);
   const [channelUpdate, setChannelUpdate] = useState({});
   const [channelDelete, setChannelDelete] = useState({});
+  const { socket, updateChannel, deleteChannel } = useContext(SocketContext);
   const navigate = useNavigate();
 
   // UPDATE channel

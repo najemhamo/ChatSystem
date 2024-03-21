@@ -1,14 +1,16 @@
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../HomePage";
+import { SocketContext, UserContext } from "../HomePage";
 import { AuthContext } from "../App";
-import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function MessageItem(props) {
-  const { message, socket, updateMessage, deleteMessage } = props;
+  const { message, updateMessage, deleteMessage } = props;
   const { users } = useContext(UserContext);
   const { user } = useContext(AuthContext);
-  const messageUser = users[message.memberId - 1];
+  const { socket } = useContext(SocketContext);
+  const messageUser = users.filter((urs) => message.memberId === urs.id)[0]
+  // const messageUser = users[message.memberId - 2];
 
   const [buttonText, setButtonText] = useState("Edit");
   const [newMessage, setNewMessage] = useState([]);
@@ -16,7 +18,7 @@ export default function MessageItem(props) {
   const [messageDelete, setMessageDelete] = useState({});
   const navigate = useNavigate();
   const ownMessage =
-    user[0] && messageUser && user[0].id === messageUser.id ? true : false;
+    user && messageUser && user.id === messageUser.id ? true : false;
 
   // UPDATE message
   useEffect(() => {
@@ -100,17 +102,33 @@ export default function MessageItem(props) {
       ></link>
 
       <div>
+
         <div className="userTime">
           <p
             className="usernameText"
             onClick={() => navigate(`/users/${messageUser.id}`)}
-          >
+            >
             {messageUser && messageUser.userName}
           </p>
           <p className="time">{message.createdAt}</p>
         </div>
 
         <div>
+          {buttonText === "Edit" && <p className={ownMessage ? "messageTexting textFix" : "messageTexting"}>{message && message.messageText}</p>}
+          {buttonText === "Save" && <input className="messageTexting textFix" type="text" placeholder={message.messageText} onChange={handleInput}></input>}
+
+          {/* <div> */}
+            {ownMessage &&
+            <>
+              <button className="messageBth messageEdit" onClick={handleEdit}><i className="fa fa-bars"></i></button>
+              <button className="messageBth" onClick={handleDelete}><i className="fa fa-trash"></i></button>
+            </>}
+          {/* </div> */}
+
+        </div>
+
+
+        {/* <div>
           {buttonText === "Edit" && (
             <p
               className={
@@ -136,7 +154,7 @@ export default function MessageItem(props) {
               onChange={handleInput}
             ></input>
           )}
-        </div>
+        </div> */}
       </div>
     </>
   );

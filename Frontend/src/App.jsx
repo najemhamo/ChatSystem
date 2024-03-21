@@ -53,17 +53,7 @@ function App() {
       <AuthContext.Provider value={{ user, setUser, authToken, login, logout }}>
         <Routes>
           <Route path="/login" element={<LoginPage users={users} />} />
-          <Route
-            path="/*"
-            element={
-              <HomePage
-                user={user}
-                logout={logout}
-                users={users}
-                setUsers={setUsers}
-              />
-            }
-          />
+          <Route path="/*" element={<HomePage users={users} setUsers={setUsers}/>}/>
         </Routes>
       </AuthContext.Provider>
     </>

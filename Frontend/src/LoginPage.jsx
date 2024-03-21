@@ -51,7 +51,6 @@ export default function LoginPage(props) {
         else
           return response.json().then((data) => {
             setMessageRegister([{ description: "Register sucessfull!" }]);
-            console.log("DATA", data);
           });
       }
     );
@@ -75,10 +74,9 @@ export default function LoginPage(props) {
           return response.text().then((text) => setMessageLogin(text));
         else
           return response.json().then((data) => {
-            console.log("DATA", data);
             const tmpUser = users.filter(
               (user) => user.userName === data.userName
-            );
+            )[0];
             login(tmpUser, data.token);
           });
       }

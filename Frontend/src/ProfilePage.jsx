@@ -1,23 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "./App";
+import { SocketContext } from "./HomePage";
 
 export default function ProfilePage(props) {
-  const { socket, updateUsers, updateChannel, deleteChannel } = props;
+  const { updateUsers } = props;
   const { memberId } = useParams();
   const { user, setUser } = useContext(AuthContext);
+  const { socket, updateChannel, deleteChannel } = useContext(SocketContext);
   const [buttonText, setButtonText] = useState("Edit");
 
   const INITIAL_USER = {
-    userName: "",
     name: "",
+    userName: "",
     aboutMe: "",
     profilePicture: "",
   };
   const [newUser, setNewUser] = useState(INITIAL_USER);
   const [updateUser, setUpdateUser] = useState({});
   const [userProfile, setUserProfile] = useState({});
-  const ownUserProfile = user[0] && user[0].id === parseInt(memberId);
+  const ownUserProfile = user && user.id === parseInt(memberId);
 
   // GET user by id
   useEffect(() => {
@@ -39,14 +41,13 @@ export default function ProfilePage(props) {
       },
       body: JSON.stringify(updateUser),
     };
-
+    
     fetch(`http://localhost:5007/chat/members/${memberId}`, putOptions);
   }, [updateUser]);
 
   // Socket
   socket.onmessage = function (event) {
     const messageObj = JSON.parse(event.data);
-    console.log("PROFILE PAGE SOCKET");
 
     if (messageObj.type === "userUpdate") {
       const updatedUser = { ...messageObj.content };
@@ -76,11 +77,17 @@ export default function ProfilePage(props) {
       if (updatedUser.aboutMe.length === 0)
         updatedUser.aboutMe = userProfile.aboutMe;
 
+      if (updatedUser.profilePicture.length === 0)
+        updatedUser.profilePicture = userProfile.profilePicture;
+
       updatedUser.id = userProfile.id;
+
       setUpdateUser(updatedUser);
       updateUsers({ updatedUser });
       setUserProfile(updatedUser);
       setUser(updatedUser);
+      localStorage.setItem("authUser", JSON.stringify(updatedUser));
+      
       setNewUser(INITIAL_USER);
       setButtonText("Edit");
     } else setButtonText("Save");
@@ -100,9 +107,11 @@ export default function ProfilePage(props) {
       ></link>
 
       <h1>User Information</h1>
-      {buttonText === "Edit" && <p>{userProfile.userName}</p>}
-      {buttonText === "Edit" && <p>{userProfile.name}</p>}
-      {buttonText === "Edit" && <p>{userProfile.aboutMe}</p>}
+      <div className="profileInfo">
+      {buttonText === "Edit" && <p>Username: {userProfile.userName}</p>}
+      {buttonText === "Edit" && <p>Name: {userProfile.name}</p>}
+      {buttonText === "Edit" && <p>About me: {userProfile.aboutMe}</p>}
+      </div>
 
       <div className="profile">
         {buttonText === "Save" && (
@@ -137,7 +146,7 @@ export default function ProfilePage(props) {
             value={newUser.aboutMe}
           ></input>
         )}
-        {/* {buttonText === "Save" && (
+        {buttonText === "Save" && (
           <input
             className="profileInputs profileInputsWrite"
             name="profilePicture"
@@ -150,12 +159,11 @@ export default function ProfilePage(props) {
             }
             value={newUser.profilePicture}
           ></input>
-        )} */}
+        )}
+
         <img
-          className="profileInputs"
+          className="profileInputs profileImage"
           src={userProfile.profilePicture}
-          width={380}
-          height={300}
         ></img>
       </div>
 

@@ -1,14 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../App";
+import { SocketContext } from "../HomePage";
 import PropTypes from "prop-types";
 
 export default function SendMessage(props) {
-  const { socket, addMessage } = props;
+  const { addMessage } = props;
   const { user } = useContext(AuthContext);
   const { channelId } = useParams();
   const [newMessage, setNewMessage] = useState({ messageText: "" });
   const [createMessage, setCreateMessage] = useState({});
+  const { socket } = useContext(SocketContext);
 
   useEffect(() => {
     if (!createMessage.messageText) return;
@@ -48,7 +50,7 @@ export default function SendMessage(props) {
     const message = {
       ...newMessage,
       channelId: channelId,
-      memberId: user[0].id,
+      memberId: user.id,
     };
     setCreateMessage(message);
     setNewMessage({ messageText: "" });

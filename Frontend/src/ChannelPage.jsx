@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { SocketContext } from "./HomePage";
 import SendMessage from "./Components/SendMessage";
 import MessageItem from "./Components/MessageItem";
-import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 
 export default function ChannelPage(props) {
-  const { channels, socket, updateChannel, deleteChannel } = props;
+  const { channels } = props;
   const { channelId } = useParams();
   const [messages, setMessages] = useState([]);
   const [messagesGET, setMessagesGET] = useState({});
+  const { socket, updateChannel, deleteChannel } = useContext(SocketContext);
   const channel = channels[channelId - 1];
 
   // GET messages
@@ -21,8 +23,6 @@ export default function ChannelPage(props) {
   // Socket
   socket.onmessage = function (event) {
     const messageObj = JSON.parse(event.data);
-
-    console.log("CHANNEL RECE", messageObj);
 
     if (messageObj.type === "messageAdd") addMessage();
     else if (messageObj.type === "messageUpdate") {
@@ -94,7 +94,6 @@ export default function ChannelPage(props) {
           <li key={index}>
             <MessageItem
               message={message}
-              socket={socket}
               updateMessage={updateMessage}
               deleteMessage={deleteMessage}
             />
@@ -102,7 +101,7 @@ export default function ChannelPage(props) {
         ))}
       </ul>
 
-      <SendMessage socket={socket} addMessage={addMessage} />
+      <SendMessage addMessage={addMessage} />
     </>
   );
 }
