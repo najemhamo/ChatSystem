@@ -16,7 +16,7 @@ export default function ChannelPage(props) {
     fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
       .then((response) => response.json())
       .then((data) => setMessages(data));
-  }, [messagesGET]);
+  }, [messagesGET, channelId]);
 
   // Socket
   socket.onmessage = function (event) {
@@ -88,8 +88,8 @@ export default function ChannelPage(props) {
 
   return (
     <>
-      <h1>{channel && channel.name}</h1>
-      <ul>
+      <h1 className="titleSTICKY">{channel && channel.name}</h1>
+      <ul className="scroll">
         {messages.map((message, index) => (
           <li key={index}>
             <MessageItem

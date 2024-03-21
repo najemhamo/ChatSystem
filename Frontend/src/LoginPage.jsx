@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./App";
+import PropTypes from "prop-types";
 
 const INITIAL_USER_REGISTER = {
   name: "",
@@ -181,3 +182,7 @@ export default function LoginPage(props) {
     </>
   );
 }
+
+LoginPage.propTypes = {
+  users: PropTypes.array.isRequired,
+};

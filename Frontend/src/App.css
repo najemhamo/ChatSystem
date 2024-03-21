@@ -60,32 +60,40 @@ li {
   margin: 0;
 }
 
-.sidebar {
+/* .sidebar {
   width: 200px;
-<<<<<<< HEAD
   height: 100%;
-  /* fix the sidebar to be 100 viewport minus the header */
   max-height: calc(100vh - 60px);
   display: inline;
-=======
-    height: 100%;
-    max-height: calc(100vh - 60px);
-    display: inline;
-}
+  height: 100%;
+  max-height: calc(100vh - 60px);
+  display: inline;
+} */
 
 .register {
   display: inline-block;
->>>>>>> main
 }
 
 .registerInputs {
   display: block;
   margin-top: 10px;
 }
+.fa-bars {
+  margin-left: 3px;
+}
 
 .fa-trash {
-  margin-right: 5px;
-} */
+  margin-left: 3px;
+}
+
+.faFix {
+  margin-left: 400px;
+}
+
+.faDix {
+  margin-left: 20px;
+}
+
 .loginInputs {
   display: fle;
 }
@@ -103,27 +111,46 @@ li {
   margin-left: 40px;
 }
 
+.userTime {
+  margin-bottom: 25px;
+
+  /* margin-right: 360px; */
+  text-align: left;
+}
+
 .usernameText {
   display: inline-block;
+  color: #ffffffad;
+  /* float: left; */
+  /* text-align: left; */
 }
 
 .time {
   display: inline-block;
+  color: #ffffffad;
+  /* display: flex; */
+  /* text-align: left; */
   margin-left: 20px;
   font-size: x-small;
 }
 
+.scroll {
+  overflow-y: scroll;
+  height: 900px;
+  width: 1800px;
+}
+
 .messageTexting {
   font-size: x-large;
-  margin: 0px;
-  margin-bottom: 30px;
-  display: inline-block;
+  margin-top: -40px;
+  /* margin-bottom: 0; */
+  text-align: left;
 }
 
 .messageBth {
   display: inline-block;
   width: 10px;
-  background-color: #2E3036;
+  background-color: #2e3036;
 }
 
 .messageEdit {
@@ -131,7 +158,7 @@ li {
 }
 
 .textFix {
-  margin-left: 130px;
+  content: center;
 }
 
 .messageSend {
@@ -146,4 +173,13 @@ li {
   height: 50px;
   font-size: 20px;
   margin-left: 20px;
+}
+
+/* Adjustments for smaller screens */
+@media screen and (max-width: 1800px), (max-height: 900px) {
+  .scroll {
+    width: 100%;
+    height: 100%;
+    order: 2;
+  }
 }

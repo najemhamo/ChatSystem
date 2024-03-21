@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "./App";
 import PropTypes from "prop-types";
 
 export default function ProfilePage(props) {
   const { socket, updateUsers, updateChannel, deleteChannel } = props;
   const { memberId } = useParams();
+  const { user } = useContext(AuthContext);
   const [buttonText, setButtonText] = useState("Edit");
 
   const INITIAL_USER = {
@@ -14,15 +16,15 @@ export default function ProfilePage(props) {
   };
   const [newUser, setNewUser] = useState(INITIAL_USER);
   const [updateUser, setUpdateUser] = useState({});
-  const [user, setUser] = useState({});
-  const ownUserProfile = parseInt(memberId) === 1;
+  const [userProfile, setUser] = useState({});
+  const ownUserProfile = user[0] && user[0].id === parseInt(memberId);
 
   // GET user by id
   useEffect(() => {
     fetch(`http://localhost:5007/chat/members/${memberId}`)
       .then((response) => response.json())
       .then((data) => setUser(data));
-  }, []);
+  }, [memberId]);
 
   // PUT new user
   useEffect(() => {
@@ -67,14 +69,15 @@ export default function ProfilePage(props) {
       const updatedUser = newUser;
 
       if (updatedUser.userName.length === 0)
-        updatedUser.userName = user.userName;
+        updatedUser.userName = userProfile.userName;
 
-      if (updatedUser.name.length === 0) updatedUser.name = user.name;
+      if (updatedUser.name.length === 0) updatedUser.name = userProfile.name;
 
-      if (updatedUser.aboutMe.length === 0) updatedUser.aboutMe = user.aboutMe;
+      if (updatedUser.aboutMe.length === 0)
+        updatedUser.aboutMe = userProfile.aboutMe;
 
-      updatedUser.profilePicture = user.profilePicture;
-      updatedUser.id = user.id;
+      updatedUser.profilePicture = userProfile.profilePicture;
+      updatedUser.id = userProfile.id;
 
       setUpdateUser(updatedUser);
       updateUsers({ updatedUser });
@@ -92,42 +95,62 @@ export default function ProfilePage(props) {
 
   return (
     <>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      ></link>
+
       <h1>User Information</h1>
-      {buttonText === "Edit" && <p>{user.userName}</p>}
-      {buttonText === "Edit" && <p>{user.name}</p>}
-      {buttonText === "Edit" && <p>{user.aboutMe}</p>}
+      {buttonText === "Edit" && <p>{userProfile.userName}</p>}
+      {buttonText === "Edit" && <p>{userProfile.name}</p>}
+      {buttonText === "Edit" && <p>{userProfile.aboutMe}</p>}
 
-      <img src={user.profilePicture} width={380} height={300}></img>
+      <div className="profile">
+        {buttonText === "Save" && (
+          <input
+            className="profileInputs profileInputsWrite"
+            name="userName"
+            type="text"
+            onChange={handleInput}
+            placeholder={userProfile.userName}
+            value={newUser.userName}
+          ></input>
+        )}
+        {buttonText === "Save" && (
+          <input
+            className="profileInputs profileInputsWrite"
+            name="name"
+            type="text"
+            onChange={handleInput}
+            placeholder={userProfile.name}
+            value={newUser.name}
+          ></input>
+        )}
+        {buttonText === "Save" && (
+          <input
+            className="profileInputs profileInputsWrite"
+            name="aboutMe"
+            type="text"
+            onChange={handleInput}
+            placeholder={userProfile.aboutMe}
+            value={newUser.aboutMe}
+          ></input>
+        )}
+        <img
+          className="profileInputs"
+          src={userProfile.profilePicture}
+          width={380}
+          height={300}
+        ></img>
+      </div>
 
-      {buttonText === "Save" && (
-        <input
-          name="userName"
-          type="text"
-          onChange={handleInput}
-          placeholder={user.userName}
-          value={newUser.userName}
-        ></input>
-      )}
-      {buttonText === "Save" && (
-        <input
-          name="name"
-          type="text"
-          onChange={handleInput}
-          placeholder={user.name}
-          value={newUser.name}
-        ></input>
-      )}
-      {buttonText === "Save" && (
-        <input
-          name="aboutMe"
-          type="text"
-          onChange={handleInput}
-          placeholder={user.aboutMe}
-          value={newUser.aboutMe}
-        ></input>
-      )}
-
-      {ownUserProfile && <button onClick={handleClick}>{buttonText}</button>}
+      <div>
+        {ownUserProfile && (
+          <button onClick={handleClick}>
+            <i className="fa fa-bars"></i> {buttonText}
+          </button>
+        )}
+      </div>
     </>
   );
 }

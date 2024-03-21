@@ -87,8 +87,9 @@ export default function HomePage(props) {
         {/* </div> */}
 
         <div className="profileBar">
-          <p onClick={() => navigate(`/users/${user.id}`)}>
-            {user && user.userName}
+          <img src={user[0].profilePicture} width={180} height={150}></img>
+          <p onClick={() => navigate(`/users/${user[0].id}`)}>
+            {user[0] && user[0].userName}
           </p>
           <button className="logoutButton" onClick={logout}>
             Logout
@@ -136,9 +137,8 @@ export default function HomePage(props) {
 }
 
 HomePage.propTypes = {
-  user: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
-  }).isRequired,
+  user: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
+  users: PropTypes.array.isRequired,
+  setUsers: PropTypes.func.isRequired,
 };
