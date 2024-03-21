@@ -1,55 +1,76 @@
-import { useContext, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { AuthContext } from "../App"
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { AuthContext } from "../App";
+import PropTypes from "prop-types";
 
-export default function SendMessage(props)
-{
-    const {socket, addMessage} = props
-    const {user} = useContext(AuthContext)
-    const {channelId} = useParams()
-    const [newMessage, setNewMessage] = useState({messageText: ""})
-    const [createMessage, setCreateMessage] = useState({})
+export default function SendMessage(props) {
+  const { socket, addMessage } = props;
+  const { user } = useContext(AuthContext);
+  const { channelId } = useParams();
+  const [newMessage, setNewMessage] = useState({ messageText: "" });
+  const [createMessage, setCreateMessage] = useState({});
 
-    useEffect(() =>
-    {
-        if (!createMessage.messageText)
-        return
+  useEffect(() => {
+    if (!createMessage.messageText) return;
 
-        socket.send(JSON.stringify({ type: "messageAdd", content: createMessage.messageText }));
-    
-        const postOptions =
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(createMessage)
-        }
-        
-        fetch(`http://localhost:5007/chat/members/1/channels/${channelId}/message`, postOptions)
-        .then((response) => response.json())
-        .then(() => addMessage())
-    }, [createMessage])
+    const postOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(createMessage),
+    };
 
-    const handleInput = (event) =>
-    {
-        setNewMessage({messageText: event.target.value})
-    }
-
-    const handleSend = () =>
-    {
-        if (newMessage.messageText.length === 0)
-            return
-
-        const message = {...newMessage, channelId: channelId, memberId: user[0].id}
-        setCreateMessage(message)
-        setNewMessage({messageText: ""})
-    }
-
-    return (
-        <>
-        <input className="messageSend" type="text" placeholder="New message" onChange={handleInput} value={newMessage.messageText}></input>
-        <button className="sendBth" onClick={handleSend}>Send</button>
-        </>
+    fetch(
+      `http://localhost:5007/chat/members/1/channels/${channelId}/message`,
+      postOptions
     )
+      .then((response) => response.json())
+      // .then(() => addMessage())
+      .then(() => {
+        addMessage();
+        socket.send(
+          JSON.stringify({
+            type: "messageAdd",
+            content: createMessage.messageText,
+          })
+        );
+      });
+  }, [createMessage]);
+
+  const handleInput = (event) => {
+    setNewMessage({ messageText: event.target.value });
+  };
+
+  const handleSend = () => {
+    if (newMessage.messageText.length === 0) return;
+
+    const message = {
+      ...newMessage,
+      channelId: channelId,
+      memberId: user[0].id,
+    };
+    setCreateMessage(message);
+    setNewMessage({ messageText: "" });
+  };
+
+  return (
+    <>
+      <input
+        className="messageSend"
+        type="text"
+        placeholder="New message"
+        onChange={handleInput}
+        value={newMessage.messageText}
+      ></input>
+      <button className="sendBth" onClick={handleSend}>
+        Send
+      </button>
+    </>
+  );
 }
+
+SendMessage.propTypes = {
+  socket: PropTypes.object.isRequired,
+  addMessage: PropTypes.func.isRequired,
+};

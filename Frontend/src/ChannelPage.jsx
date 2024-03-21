@@ -8,22 +8,21 @@ export default function ChannelPage(props) {
   const { channels, socket, updateChannel, deleteChannel } = props;
   const { channelId } = useParams();
   const [messages, setMessages] = useState([]);
-  const [messagesGET, setMessagesGET] = useState(false);
+  const [messagesGET, setMessagesGET] = useState({});
   const channel = channels[channelId - 1];
 
-    // GET messages
-    useEffect(() =>
-    {
-        fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
-        .then((response) => response.json())
-        .then((data) => setMessages(data))
-    }, [messagesGET, channelId])
+  // GET messages
+  useEffect(() => {
+    fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
+      .then((response) => response.json())
+      .then((data) => setMessages(data));
+  }, [messagesGET, channelId]);
 
   // Socket
   socket.onmessage = function (event) {
     const messageObj = JSON.parse(event.data);
 
-    console.log("CHANNEL RECE", messageObj.type);
+    console.log("CHANNEL RECE", messageObj);
 
     if (messageObj.type === "messageAdd") addMessage();
     else if (messageObj.type === "messageUpdate") {
@@ -51,7 +50,7 @@ export default function ChannelPage(props) {
 
   // MESSAGES
   const addMessage = () => {
-    setMessagesGET(!messagesGET);
+    setMessagesGET({ new: "new" });
   };
 
   const updateMessage = (data) => {
@@ -89,8 +88,8 @@ export default function ChannelPage(props) {
 
   return (
     <>
-      <h1>{channel && channel.name}</h1>
-      <ul>
+      <h1 className="titleSTICKY">{channel && channel.name}</h1>
+      <ul className="scroll">
         {messages.map((message, index) => (
           <li key={index}>
             <MessageItem
