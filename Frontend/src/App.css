@@ -93,5 +93,47 @@ li {
   margin-left: 40px;
 }
 
-.channelButtons {
+.usernameText {
+  display: inline-block;
+}
+
+.time {
+  display: inline-block;
+  margin-left: 20px;
+  font-size: x-small;
+}
+
+.messageTexting {
+  font-size: x-large;
+  margin: 0px;
+  margin-bottom: 30px;
+  display: inline-block;
+}
+
+.messageBth {
+  display: inline-block;
+  width: 10px;
+  background-color: #2E3036;
+}
+
+.messageEdit {
+  margin-left: 50px;
+}
+
+.textFix {
+  margin-left: 130px;
+}
+
+.messageSend {
+  width: 400px;
+  height: 40px;
+  font-size: 20px;
+  margin-left: 100px;
+}
+
+.sendBth {
+  width: 100px;
+  height: 50px;
+  font-size: 20px;
+  margin-left: 20px;
 }
