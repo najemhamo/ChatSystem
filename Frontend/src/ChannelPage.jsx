@@ -11,12 +11,13 @@ export default function ChannelPage(props) {
   const [messagesGET, setMessagesGET] = useState(false);
   const channel = channels[channelId - 1];
 
-  // GET messages
-  useEffect(() => {
-    fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
-      .then((response) => response.json())
-      .then((data) => setMessages(data));
-  }, [messagesGET]);
+    // GET messages
+    useEffect(() =>
+    {
+        fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
+        .then((response) => response.json())
+        .then((data) => setMessages(data))
+    }, [messagesGET, channelId])
 
   // Socket
   socket.onmessage = function (event) {

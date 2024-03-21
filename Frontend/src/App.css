@@ -62,12 +62,10 @@ li {
 
 .sidebar {
   width: 200px;
-<<<<<<< HEAD
   height: 100%;
   /* fix the sidebar to be 100 viewport minus the header */
   max-height: calc(100vh - 60px);
   display: inline;
-=======
     height: 100%;
     max-height: calc(100vh - 60px);
     display: inline;
@@ -75,7 +73,6 @@ li {
 
 .register {
   display: inline-block;
->>>>>>> main
 }
 
 .registerInputs {
@@ -146,4 +143,17 @@ li {
   height: 50px;
   font-size: 20px;
   margin-left: 20px;
+}
+
+.profile {
+  display: inline-block;
+}
+
+.profileInputs {
+  display: block;
+  margin: 20px;
+}
+
+.profileInputsWrite {
+  margin-left: 120px;
 }
