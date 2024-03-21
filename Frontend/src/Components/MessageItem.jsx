@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { UserContext } from "../App"
+import { UserContext } from "../HomePage"
 
 export default function MessageItem(props)
 {

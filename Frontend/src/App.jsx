@@ -1,110 +1,58 @@
-import { Route, Routes, useNavigate } from 'react-router-dom'
 import './App.css'
-import HomePage from './HomePage'
-import { createContext } from 'react'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import ChannelPage from './ChannelPage'
-import ProfilePage from './ProfilePage'
-import ChannelItem from './Components/ChannelItem'
+import { createContext } from 'react'
+import LoginPage from './LoginPage'
+import HomePage from './HomePage'
 
-export const UserContext = createContext()
+export const AuthContext = createContext();
+
+const loadUserDataFromStorage = () => 
+{
+  const userVal = localStorage.getItem("authUser");
+  if (userVal !== undefined || userVal !== null) return JSON.parse(userVal);
+  return null;
+};
 
 function App() {
-  const [socket] = useState(new WebSocket('ws://localhost:5007/chat'))
-  const [channels, setChannels] = useState([])
-  const [users, setUsers] = useState([])
+  const [authToken, setAuthToken] = useState(localStorage.getItem("authToken") || "");
+  const [user, setUser] = useState(loadUserDataFromStorage);
   const navigate = useNavigate()
 
-  // GET channels
-    useEffect(() =>
-    {
-        fetch("http://localhost:5007/chat/channels")
-        .then((response) => response.json())
-        .then((data) => setChannels(data))
-    }, [])
+  useEffect(() =>
+  {
+    if (!user)
+      navigate("/login")
 
-    // GET users
-    useEffect(() =>
-    {
-        fetch("http://localhost:5007/chat/members")
-        .then((response) => response.json())
-        .then((data) => setUsers(data))
-    }, [])
+  }, [user, navigate])
 
-    // Users
-    const updateUsers = (data) =>
-    {
-        const newUsers = users.map((user) =>
-        {
-            if (user.id === data.updatedUser.id) return data.updatedUser
-            return user
-        })
 
-        setUsers(newUsers)
-    }
+  const login = (user, authToken) =>
+  {
+    setUser(user);
+    setAuthToken(authToken);
+    localStorage.setItem("authUser", JSON.stringify(user));
+    localStorage.setItem("authToken", authToken);
+    navigate("/");
+  };
 
-    // CHANNELS
-    const updateChannel = (data) =>
-    {
-        if (channels.length === 0)
-        {
-            setChannels(channelList => channelList.map((chn) =>
-            {
-                if (chn.id === data.updatedChannel.id) return data.updatedChannel
-                return chn
-            }))
-        }
-        else
-        {
-            const tmpChannels = channels.map((chn) => {
-                if (chn.id === data.updatedChannel.id) return data.updatedChannel
-                return chn
-            })
-
-        setChannels(tmpChannels)
-        }
-    }
-
-    const deleteChannel = (data) =>
-    {
-        if (channels.length === 0)
-            setChannels(channelList => channelList.filter((chn) => {return chn.id !== data.id}))
-        else
-        {
-            const tmpChannels = channels.filter((chn) => {return chn.id !== data.id})
-            setChannels(tmpChannels)
-        }
-    }
+  const logout = () =>
+  {
+    setUser(null);
+    setAuthToken("");
+    localStorage.removeItem("authUser");
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  };
 
   return (
     <>
-      <h1>Chat Application</h1>
-        <div className="container">
-            <div className="container-main">
-                <nav className="sidebar">
-                    <ul>
-                        {channels.map((channel, index) =>
-                        (
-                            <li className="sidebar" key={index}>
-                                <ChannelItem channel={channel} socket={socket} updateChannel={updateChannel} deleteChannel={deleteChannel}/>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
-            </div>
-        </div>
-
-        <div>
-            <p onClick={() => navigate(`/users/${users[0].id}`)}>{users[0] && users[0].userName}</p>
-        </div>
-
-      <UserContext.Provider value={{users}}>
-            <Routes>
-                <Route path='/' element={<HomePage socket={socket} updateChannel={updateChannel} deleteChannel={deleteChannel}/>}/>
-                <Route path='/channel/:channelId' element={<ChannelPage channels={channels} socket={socket} updateChannel={updateChannel} deleteChannel={deleteChannel}/>}/>
-                <Route path="/users/:memberId" element={<ProfilePage socket={socket} updateUsers={updateUsers} updateChannel={updateChannel} deleteChannel={deleteChannel}/>}/>
-            </Routes>
-        </UserContext.Provider>
+      <AuthContext.Provider value={{ user, authToken, login, logout }}>
+        <Routes>
+          <Route path="/login" element={<LoginPage/>} />
+          <Route path='/*' element={<HomePage user={user} logout={logout}/>}/>
+        </Routes>
+      </AuthContext.Provider>
     </>
   )
 }
