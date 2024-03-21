@@ -48,8 +48,8 @@ export default function SendMessage(props)
 
     return (
         <>
-        <input type="text" placeholder="New message" onChange={handleInput} value={newMessage.messageText}></input>
-        <button onClick={handleSend}>Send</button>
+        <input className="messageSend" type="text" placeholder="New message" onChange={handleInput} value={newMessage.messageText}></input>
+        <button className="sendBth" onClick={handleSend}>Send</button>
         </>
     )
 }
