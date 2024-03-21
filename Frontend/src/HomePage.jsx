@@ -87,7 +87,11 @@ export default function HomePage(props) {
         {/* </div> */}
 
         <div className="profileBar">
-          <img src={user[0].profilePicture} width={180} height={150}></img>
+          <img
+            src={user[0] && user[0].profilePicture}
+            width={180}
+            height={150}
+          ></img>
           <p onClick={() => navigate(`/users/${user[0].id}`)}>
             {user[0] && user[0].userName}
           </p>

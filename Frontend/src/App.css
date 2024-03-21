@@ -87,15 +87,18 @@ li {
 }
 
 .faFix {
-  margin-left: 400px;
+  /* margin-left: 400px; */
+  /* position: fixed; */
+  right: 200;
 }
 
 .faDix {
   margin-left: 20px;
 }
 
+
 .loginInputs {
-  display: fle;
+  display: flex;
 }
 
 .loginInput {
@@ -134,6 +137,19 @@ li {
   font-size: x-small;
 }
 
+.messageInputEdit{
+  /* margin-bottom: 25px;
+  text-align: left; */
+  /* position: fixed; */
+  /* margin-right: 350px; */
+}
+
+.messageIcon {
+  color: #ffffffad;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
 .scroll {
   overflow-y: scroll;
   height: 900px;
@@ -143,7 +159,7 @@ li {
 .messageTexting {
   font-size: x-large;
   margin-top: -40px;
-  /* margin-bottom: 0; */
+  margin-bottom: 0;
   text-align: left;
 }
 
@@ -182,4 +198,15 @@ li {
     height: 100%;
     order: 2;
   }
+.profile {
+  display: inline-block;
+}
+
+.profileInputs {
+  display: block;
+  margin: 20px;
+}
+
+.profileInputsWrite {
+  margin-left: 120px;
 }

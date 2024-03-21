@@ -1,29 +1,29 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "./App";
-import PropTypes from "prop-types";
 
 export default function ProfilePage(props) {
   const { socket, updateUsers, updateChannel, deleteChannel } = props;
   const { memberId } = useParams();
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [buttonText, setButtonText] = useState("Edit");
 
   const INITIAL_USER = {
     userName: "",
     name: "",
     aboutMe: "",
+    profilePicture: "",
   };
   const [newUser, setNewUser] = useState(INITIAL_USER);
   const [updateUser, setUpdateUser] = useState({});
-  const [userProfile, setUser] = useState({});
+  const [userProfile, setUserProfile] = useState({});
   const ownUserProfile = user[0] && user[0].id === parseInt(memberId);
 
   // GET user by id
   useEffect(() => {
     fetch(`http://localhost:5007/chat/members/${memberId}`)
       .then((response) => response.json())
-      .then((data) => setUser(data));
+      .then((data) => setUserProfile(data));
   }, [memberId]);
 
   // PUT new user
@@ -76,11 +76,10 @@ export default function ProfilePage(props) {
       if (updatedUser.aboutMe.length === 0)
         updatedUser.aboutMe = userProfile.aboutMe;
 
-      updatedUser.profilePicture = userProfile.profilePicture;
       updatedUser.id = userProfile.id;
-
       setUpdateUser(updatedUser);
       updateUsers({ updatedUser });
+      setUserProfile(updatedUser);
       setUser(updatedUser);
       setNewUser(INITIAL_USER);
       setButtonText("Edit");
@@ -122,7 +121,7 @@ export default function ProfilePage(props) {
             name="name"
             type="text"
             onChange={handleInput}
-            placeholder={userProfile.name}
+            placeholder={userProfile.name === "" ? "Name" : userProfile.name}
             value={newUser.name}
           ></input>
         )}
@@ -132,10 +131,26 @@ export default function ProfilePage(props) {
             name="aboutMe"
             type="text"
             onChange={handleInput}
-            placeholder={userProfile.aboutMe}
+            placeholder={
+              userProfile.aboutMe === "" ? "AboutMe" : userProfile.aboutMe
+            }
             value={newUser.aboutMe}
           ></input>
         )}
+        {/* {buttonText === "Save" && (
+          <input
+            className="profileInputs profileInputsWrite"
+            name="profilePicture"
+            type="text"
+            onChange={handleInput}
+            placeholder={
+              userProfile.profilePicture === ""
+                ? "PictureLink"
+                : userProfile.profilePicture
+            }
+            value={newUser.profilePicture}
+          ></input>
+        )} */}
         <img
           className="profileInputs"
           src={userProfile.profilePicture}
@@ -154,10 +169,3 @@ export default function ProfilePage(props) {
     </>
   );
 }
-
-ProfilePage.propTypes = {
-  socket: PropTypes.object.isRequired,
-  updateUsers: PropTypes.func.isRequired,
-  updateChannel: PropTypes.func.isRequired,
-  deleteChannel: PropTypes.func.isRequired,
-};
