@@ -1,116 +1,115 @@
-import { useEffect, useState } from "react"
-import SendMessage from "./Components/SendMessage"
-import MessageItem from "./Components/MessageItem"
-import { useParams } from "react-router-dom"
+import { useEffect, useState } from "react";
+import SendMessage from "./Components/SendMessage";
+import MessageItem from "./Components/MessageItem";
+import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
-export default function ChannelPage(props)
-{
-    const {channels, socket, updateChannel, deleteChannel} = props
-    const {channelId} = useParams()
-    const [messages, setMessages] = useState([])
-    const [messagesGET, setMessagesGET] = useState(false)
-    const channel = channels[channelId - 1]
+export default function ChannelPage(props) {
+  const { channels, socket, updateChannel, deleteChannel } = props;
+  const { channelId } = useParams();
+  const [messages, setMessages] = useState([]);
+  const [messagesGET, setMessagesGET] = useState(false);
+  const channel = channels[channelId - 1];
 
-    // GET messages
-    useEffect(() =>
-    {
-        fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
-        .then((response) => response.json())
-        .then((data) => setMessages(data))
-    }, [messagesGET])
+  // GET messages
+  useEffect(() => {
+    fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
+      .then((response) => response.json())
+      .then((data) => setMessages(data));
+  }, [messagesGET]);
 
-    // Socket
-    socket.onmessage = function (event)
-    {
-        const messageObj = JSON.parse(event.data)
+  // Socket
+  socket.onmessage = function (event) {
+    const messageObj = JSON.parse(event.data);
 
-        console.log("CHANNEL RECE", messageObj.type)
+    console.log("CHANNEL RECE", messageObj.type);
 
-        if (messageObj.type === "messageAdd")
-            addMessage()
-
-        else if (messageObj.type === "messageUpdate")
-        {
-            const updatedMessage =
-            {
-                messageText: messageObj.content,
-                channelId: channelId,
-                userId: 1,
-                id: messageObj.id
-            }
-            updateMessage({updatedMessage})
-        }
-
-        else if (messageObj.type === "messageDelete")
-        {
-            deleteMessage({id: messageObj.id})
-        }
-
-        if (messageObj.type === "channelUpdate")
-        {
-            const updatedChannel =
-            {
-                name: messageObj.content,
-                id: messageObj.id
-            }
-            updateChannel({updatedChannel})
-        }
-        
-        else if (messageObj.type === "channelDelete")
-        {
-            deleteChannel({id: messageObj.id})
-        }
+    if (messageObj.type === "messageAdd") addMessage();
+    else if (messageObj.type === "messageUpdate") {
+      const updatedMessage = {
+        messageText: messageObj.content,
+        channelId: channelId,
+        userId: 1,
+        id: messageObj.id,
+      };
+      updateMessage({ updatedMessage });
+    } else if (messageObj.type === "messageDelete") {
+      deleteMessage({ id: messageObj.id });
     }
 
-    // MESSAGES
-    const addMessage = () =>
-    {
-        setMessagesGET(!messagesGET) 
+    if (messageObj.type === "channelUpdate") {
+      const updatedChannel = {
+        name: messageObj.content,
+        id: messageObj.id,
+      };
+      updateChannel({ updatedChannel });
+    } else if (messageObj.type === "channelDelete") {
+      deleteChannel({ id: messageObj.id });
     }
+  };
 
-    const updateMessage = (data) =>
-    {
-        if (messages.length === 0)
-        {
-            setMessages(message => message.map((msg) =>
-            {
-                if (msg.id === data.updatedMessage.id) return data.updatedMessage
-                return msg
-            }))
-        }
-        else
-        {
-            const tmpMessages = messages.map((message) => {
-                if (message.id === data.updatedMessage.id) return data.updatedMessage
-                return message
-            })
+  // MESSAGES
+  const addMessage = () => {
+    setMessagesGET(!messagesGET);
+  };
 
-            setMessages(tmpMessages)
-        }
+  const updateMessage = (data) => {
+    if (messages.length === 0) {
+      setMessages((message) =>
+        message.map((msg) => {
+          if (msg.id === data.updatedMessage.id) return data.updatedMessage;
+          return msg;
+        })
+      );
+    } else {
+      const tmpMessages = messages.map((message) => {
+        if (message.id === data.updatedMessage.id) return data.updatedMessage;
+        return message;
+      });
+
+      setMessages(tmpMessages);
     }
+  };
 
-    const deleteMessage = (data) =>
-    {
-        if (messages.length === 0)
-            setMessages(messageList => messageList.filter((message) => {return message.id !== data.id}))
-        else
-        {
-            const tmpMessages = messages.filter((message) => {return message.id !== data.id})
-            setMessages(tmpMessages)
-        }
+  const deleteMessage = (data) => {
+    if (messages.length === 0)
+      setMessages((messageList) =>
+        messageList.filter((message) => {
+          return message.id !== data.id;
+        })
+      );
+    else {
+      const tmpMessages = messages.filter((message) => {
+        return message.id !== data.id;
+      });
+      setMessages(tmpMessages);
     }
+  };
 
-    return (
-        <>
-        <h1>{channel && channel.name}</h1>
-        <ul>
-            {messages.map((message, index) =>
-            (
-                <li key={index}><MessageItem message={message} socket={socket} updateMessage={updateMessage} deleteMessage={deleteMessage}/></li>
-            ))}
-        </ul>
+  return (
+    <>
+      <h1>{channel && channel.name}</h1>
+      <ul>
+        {messages.map((message, index) => (
+          <li key={index}>
+            <MessageItem
+              message={message}
+              socket={socket}
+              updateMessage={updateMessage}
+              deleteMessage={deleteMessage}
+            />
+          </li>
+        ))}
+      </ul>
 
-        <SendMessage socket={socket} addMessage={addMessage}/>
-        </>
-    )
+      <SendMessage socket={socket} addMessage={addMessage} />
+    </>
+  );
 }
+
+ChannelPage.propTypes = {
+  channels: PropTypes.array.isRequired,
+  socket: PropTypes.object.isRequired,
+  updateChannel: PropTypes.func.isRequired,
+  deleteChannel: PropTypes.func.isRequired,
+};

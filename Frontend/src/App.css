@@ -62,13 +62,10 @@ li {
 
 .sidebar {
   width: 200px;
-    height: 100%;
-    /* fix the sidebar to be 100 viewport minus the header */
-    max-height: calc(100vh - 60px);
-    display: inline;
-}
-
-.channelButtons {
+  height: 100%;
+  /* fix the sidebar to be 100 viewport minus the header */
+  max-height: calc(100vh - 60px);
+  display: inline;
 }
 
 /* .fa-bars {
