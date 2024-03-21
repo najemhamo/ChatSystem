@@ -105,11 +105,14 @@ export default function ProfilePage(props)
             setButtonText("Save")
     }
 
-    const handleInput = (event) =>
-    {
-        const {name, value} = event.target
-        const tmpUser = {...newUser, [name]: value}
-        setNewUser(tmpUser)
+    if (messageObj.type === "channelUpdate") {
+      const updatedChannel = {
+        name: messageObj.content,
+        id: messageObj.id,
+      };
+      updateChannel({ updatedChannel });
+    } else if (messageObj.type === "channelDelete") {
+      deleteChannel({ id: messageObj.id });
     }
 
     return (
@@ -134,3 +137,4 @@ export default function ProfilePage(props)
         </>
     )
 }
+

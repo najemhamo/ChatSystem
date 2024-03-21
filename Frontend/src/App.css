@@ -62,6 +62,10 @@ li {
 
 .sidebar {
   width: 200px;
+  height: 100%;
+  /* fix the sidebar to be 100 viewport minus the header */
+  max-height: calc(100vh - 60px);
+  display: inline;
     height: 100%;
     max-height: calc(100vh - 60px);
     display: inline;
@@ -76,6 +80,9 @@ li {
   margin-top: 10px;
 }
 
+.fa-trash {
+  margin-right: 5px;
+} */
 .loginInputs {
   display: fle;
 }
