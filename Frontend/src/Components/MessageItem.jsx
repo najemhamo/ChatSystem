@@ -29,19 +29,23 @@ export default function MessageItem(props) {
         type: "messageUpdate",
         content: messageUpdate.messageText,
         id: messageUpdate.id,
+        memberid: messageUpdate.memberId,
+        createdAt: messageUpdate.createdAt
       })
     );
+
+    console.log("NEW MESS", messageUpdate)
 
     const putOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(messageUpdate),
+      body: JSON.stringify({messageText: messageUpdate.messageText}),
     };
 
     fetch(
-      `http://localhost:5007/chat/messages/${messageUpdate.id}`,
+      `http://localhost:5007/chat/messages/${messageUpdate.id}?id=${messageUpdate.id}`,
       putOptions
     );
   }, [messageUpdate]);

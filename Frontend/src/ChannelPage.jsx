@@ -29,8 +29,9 @@ export default function ChannelPage(props) {
       const updatedMessage = {
         messageText: messageObj.content,
         channelId: channelId,
-        userId: 1,
+        memberId: messageObj.memberid,
         id: messageObj.id,
+        createdAt: messageObj.createdAt
       };
       updateMessage({ updatedMessage });
     } else if (messageObj.type === "messageDelete") {
