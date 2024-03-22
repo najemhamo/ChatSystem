@@ -1,5 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "./App";
 import ChannelPage from "./ChannelPage";
 import ProfilePage from "./ProfilePage";
 import HomeSocketPage from "./HomeSocketPage";
@@ -7,12 +9,14 @@ import ChannelItem from "./Components/ChannelItem";
 import PropTypes from "prop-types";
 
 export const UserContext = createContext();
+export const SocketContext = createContext();
 
 export default function HomePage(props) {
-  const { user, logout, users, setUsers } = props;
+  const { users, setUsers } = props;
   const [socket] = useState(new WebSocket("ws://localhost:5007/chat"));
   const [channels, setChannels] = useState([]);
   const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
 
   // GET channels
   useEffect(() => {
@@ -23,9 +27,9 @@ export default function HomePage(props) {
 
   // Users
   const updateUsers = (data) => {
-    const newUsers = users.map((user) => {
-      if (user.id === data.updatedUser.id) return data.updatedUser;
-      return user;
+    const newUsers = users.map((usr) => {
+      if (usr.id === data.updatedUser.id) return data.updatedUser;
+      return usr;
     });
 
     setUsers(newUsers);
@@ -64,36 +68,30 @@ export default function HomePage(props) {
       setChannels(tmpChannels);
     }
   };
-  console.log("User", user);
+
   return (
     <>
-      {/* <h1 className="Welcome"> Chat Application</h1> */}
       <div className="container">
-        {/* <div className="container-main"> */}
         <nav className="sideNavbar">
           <ul className="channels">
             {channels.map((channel, index) => (
               <li key={index}>
-                <ChannelItem
-                  channel={channel}
-                  socket={socket}
-                  updateChannel={updateChannel}
-                  deleteChannel={deleteChannel}
-                />
+                <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
+                  <ChannelItem channel={channel}/>
+                </SocketContext.Provider>
               </li>
             ))}
           </ul>
         </nav>
-        {/* </div> */}
 
         <div className="profileBar">
           <img
-            src={user[0] && user[0].profilePicture}
+            src={user && user.profilePicture}
             width={180}
             height={150}
           ></img>
-          <p onClick={() => navigate(`/users/${user[0].id}`)}>
-            {user[0] && user[0].userName}
+          <p onClick={() => navigate(`/users/${user.id}`)}>
+            {user && user.userName}
           </p>
           <button className="logoutButton" onClick={logout}>
             Logout
@@ -101,40 +99,13 @@ export default function HomePage(props) {
         </div>
       </div>
       <UserContext.Provider value={{ users }}>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <HomeSocketPage
-                socket={socket}
-                updateChannel={updateChannel}
-                deleteChannel={deleteChannel}
-              />
-            }
-          />
-          <Route
-            path="/channel/:channelId"
-            element={
-              <ChannelPage
-                channels={channels}
-                socket={socket}
-                updateChannel={updateChannel}
-                deleteChannel={deleteChannel}
-              />
-            }
-          />
-          <Route
-            path="/users/:memberId"
-            element={
-              <ProfilePage
-                socket={socket}
-                updateUsers={updateUsers}
-                updateChannel={updateChannel}
-                deleteChannel={deleteChannel}
-              />
-            }
-          />
-        </Routes>
+        <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
+          <Routes>
+            <Route path="/" element={<HomeSocketPage/>}/>
+            <Route path="/channel/:channelId" element={<ChannelPage channels={channels}/>}/>
+            <Route path="/users/:memberId" element={<ProfilePage updateUsers={updateUsers}/>}/>
+          </Routes>
+        </SocketContext.Provider>
       </UserContext.Provider>
     </>
   );
