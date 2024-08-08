@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using DataContext;
@@ -56,7 +55,7 @@ namespace Repository
         public async Task<Member?> UpdateMemberById(int id, UpdateMemberPayload payload)
         {
             var member = await _context.Members.FirstOrDefaultAsync(u => u.Id == id);
-            
+
             // Check if member is null or if any of the payload fields are empty
             if (member == null || string.IsNullOrEmpty(payload.UserName) || string.IsNullOrEmpty(payload.Name))
             {
@@ -215,7 +214,7 @@ namespace Repository
             await _context.Members.AddAsync(member);
             await _context.SaveChangesAsync();
 
-             // Get all channels from the database
+            // Get all channels from the database
             var channels = await _context.Channels.ToListAsync();
 
             // Add the new member to all channels
@@ -224,6 +223,12 @@ namespace Repository
                 await AddMemberToChannel(member.Id, channel.Id);
             }
             return member;
+        }
+
+        public async Task ResetDatabase()
+        {
+            await _context.Database.EnsureDeletedAsync();
+            await _context.Database.EnsureCreatedAsync();
         }
 
     }
