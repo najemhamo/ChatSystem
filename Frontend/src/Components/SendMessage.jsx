@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../App";
 import { SocketContext } from "../HomePage";
@@ -8,66 +8,61 @@ export default function SendMessage(props) {
   const { addMessage } = props;
   const { user } = useContext(AuthContext);
   const { channelId } = useParams();
-  const [newMessage, setNewMessage] = useState({ messageText: "" });
-  const [createMessage, setCreateMessage] = useState({});
   const { socket } = useContext(SocketContext);
 
-  useEffect(() => {
-    if (!createMessage.messageText) return;
+  const onSendMessage = (event) =>
+  {
+    // Creates the message
+    event.preventDefault()
+    const newMessage = event.target.message.value
+    if (newMessage.length === 0)
+      return
 
+    const message = {
+      messageText: newMessage,
+      channelId: channelId,
+      memberId: user.id,
+    }
+
+
+    // POST new message
     const postOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(createMessage),
+      body: JSON.stringify(message),
     };
 
     fetch(
-      `http://localhost:5007/chat/members/1/channels/${channelId}/message`,
+      `http://localhost:5007/chat/members/${user.id}/channels/${channelId}/message`,
       postOptions
     )
       .then((response) => response.json())
-      // .then(() => addMessage())
       .then(() => {
-        addMessage();
+        addMessage()
+
+        // Websocket send message
         socket.send(
           JSON.stringify({
             type: "messageAdd",
-            content: createMessage.messageText,
+            content: message,
           })
         );
       });
-  }, [createMessage]);
-
-  const handleInput = (event) => {
-    setNewMessage({ messageText: event.target.value });
-  };
-
-  const handleSend = () => {
-    if (newMessage.messageText.length === 0) return;
-
-    const message = {
-      ...newMessage,
-      channelId: channelId,
-      memberId: user.id,
-    };
-    setCreateMessage(message);
-    setNewMessage({ messageText: "" });
-  };
+  }
 
   return (
     <>
+    <form onSubmit={onSendMessage}>
       <input
         className="messageSend"
         type="text"
+        name="message"
         placeholder="New message"
-        onChange={handleInput}
-        value={newMessage.messageText}
-      ></input>
-      <button className="sendBth" onClick={handleSend}>
-        Send
-      </button>
+        ></input>
+        <button className="sendBth">Send</button>
+      </form>
     </>
   );
 }

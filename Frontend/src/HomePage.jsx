@@ -77,7 +77,7 @@ export default function HomePage(props) {
             {channels.map((channel, index) => (
               <li key={index}>
                 <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
-                  <ChannelItem channel={channel}/>
+                  <ChannelItem channel={channel} admin={user.role === 0}/>
                 </SocketContext.Provider>
               </li>
             ))}
