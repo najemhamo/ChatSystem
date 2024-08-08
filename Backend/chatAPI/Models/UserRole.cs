@@ -2,8 +2,8 @@ namespace Models
 {
   public enum Roles
   {
-    Admin,
-    Member
+    Member,
+    Admin
   }
 
 }
