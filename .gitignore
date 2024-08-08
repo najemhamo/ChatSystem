@@ -488,7 +488,7 @@ $RECYCLE.BIN/
 */**/bin/Release   
 */**/obj/Debug   
 */**/obj/Release   
-/appsettings.Development.json
-/appsettings.json
-/Migrations
-
+appsettings.Development.json
+appsettings.json
+Migrations
+.vs

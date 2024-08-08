@@ -1,5 +1,6 @@
-using System.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Repository;
 using Services;
 
@@ -23,6 +24,7 @@ namespace Endpoints
             chat.MapPost("members/{memberID}/channels/{channelID}/message", CreateMessage);
             chat.MapPut("messages/{messageID}", UpdateMessageById);
             chat.MapDelete("messages/{messageID}", DeleteMessageById);
+            chat.MapGet("reset", ResetDatabase);
         }
 
         private static async Task GetConnection(HttpContext context, ChatService chatService)
@@ -136,6 +138,7 @@ namespace Endpoints
             return TypedResults.Ok(message);
         }
 
+        [Authorize(Roles = nameof(Roles.Admin))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         private static async Task<IResult> CreateChannel(IChatRepository chatRepository, CreateOrUpdateChannelPayload payload)
@@ -148,6 +151,7 @@ namespace Endpoints
             return TypedResults.Ok(channel);
         }
 
+        [Authorize(Roles = nameof(Roles.Admin))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         private static async Task<IResult> UpdateChannelById(int id, IChatRepository chatRepository, CreateOrUpdateChannelPayload payload)
@@ -164,6 +168,7 @@ namespace Endpoints
             return TypedResults.Ok(channel);
         }
 
+        [Authorize(Roles = nameof(Roles.Admin))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         private static async Task<IResult> DeleteChannelById(int id, IChatRepository chatRepository)
@@ -174,6 +179,15 @@ namespace Endpoints
                 return TypedResults.NotFound();
             }
             return TypedResults.Ok(channel);
-        }    
+        }
+
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        private static async Task<IResult> ResetDatabase(IChatRepository chatRepository)
+        {
+            await chatRepository.ResetDatabase();
+            return TypedResults.Ok();
+        }
     }
 }

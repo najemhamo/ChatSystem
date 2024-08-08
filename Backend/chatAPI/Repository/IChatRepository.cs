@@ -15,7 +15,7 @@ namespace Repository
         Task<Channel> CreateChannel(CreateOrUpdateChannelPayload payload);
         Task<Channel> UpdateChannelById(int id, CreateOrUpdateChannelPayload payload);
         Task<Channel> DeleteChannelById(int id);
-        Task<IEnumerable<Member>> GetMembers();        
+        Task<IEnumerable<Member>> GetMembers();
         Task<Member> GetMemberById(int id, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations);
         Task<Member> CreateMember(CreateMemberPayload payload);
         Task<Member?> UpdateMemberById(int id, UpdateMemberPayload payload);
@@ -25,5 +25,9 @@ namespace Repository
         Task<Message> DeleteMessageById(int id);
         public ApplicationUser? GetUser(string userName);
         Task<MemberChannel> AddMemberToChannel(int memberId, int channelId);
+
+        // Reset the database and delete all the data
+        Task ResetDatabase();
+
     }
 }
