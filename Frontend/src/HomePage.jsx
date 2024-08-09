@@ -25,7 +25,7 @@ export default function HomePage(props) {
       .then((data) => setChannels(data));
   }, []);
 
-  // Users
+  // USERS
   const updateUsers = (data) => {
     const newUsers = users.map((usr) => {
       if (usr.id === data.updatedUser.id) return data.updatedUser;
@@ -69,6 +69,22 @@ export default function HomePage(props) {
     }
   };
 
+  // SOCKET
+  socket.onmessage = function (event) {
+    const messageObj = JSON.parse(event.data);
+    console.log("HOMEPAGE")
+
+    if (messageObj.type === "channelUpdate") {
+      const updatedChannel = {
+        name: messageObj.content,
+        id: messageObj.id,
+      };
+      updateChannel({ updatedChannel });
+    } else if (messageObj.type === "channelDelete") {
+      deleteChannel({ id: messageObj.id });
+    }
+  }
+
   return (
     <>
       <div className="container">
@@ -77,7 +93,7 @@ export default function HomePage(props) {
             {channels.map((channel, index) => (
               <li key={index}>
                 <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
-                  <ChannelItem channel={channel} admin={user.role === 0}/>
+                  <ChannelItem channel={channel} admin={user.role === 1}/>
                 </SocketContext.Provider>
               </li>
             ))}

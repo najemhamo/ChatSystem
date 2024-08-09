@@ -8,17 +8,9 @@ export default function HomeSocketPage()
 
   // Socket
   socket.onmessage = function (event) {
-    const messageObj = JSON.parse(event.data);
+    
 
-    if (messageObj.type === "channelUpdate") {
-      const updatedChannel = {
-        name: messageObj.content,
-        id: messageObj.id,
-      };
-      updateChannel({ updatedChannel });
-    } else if (messageObj.type === "channelDelete") {
-      deleteChannel({ id: messageObj.id });
-    }
+    
   };
 
   return <></>;

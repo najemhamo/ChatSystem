@@ -14,7 +14,7 @@ export default function ChannelItem(props) {
     {
       // Create the new channel name
       const channelName = document.getElementById("editedChannel").value    
-      if (channelName.length === 0)
+      if (channelName.length === 0 || channelName === channel.name)
       {
         setButtonText("Edit");
         return;
@@ -37,7 +37,7 @@ export default function ChannelItem(props) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(channel),
+        body: JSON.stringify({name: channelName}),
       };
 
       fetch(`http://localhost:5007/chat/channels/${channel.id}`, putOptions)

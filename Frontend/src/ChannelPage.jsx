@@ -9,7 +9,6 @@ export default function ChannelPage(props) {
   const { channels } = props;
   const { channelId } = useParams();
   const [messages, setMessages] = useState([]);
-  const [messagesGET, setMessagesGET] = useState({});
   const { socket, updateChannel, deleteChannel } = useContext(SocketContext);
   const channel = channels[channelId - 1];
 
@@ -18,13 +17,13 @@ export default function ChannelPage(props) {
     fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
       .then((response) => response.json())
       .then((data) => setMessages(data));
-  }, [messagesGET, channelId]);
+  }, [channelId]);
 
   // Socket
   socket.onmessage = function (event) {
     const messageObj = JSON.parse(event.data);
 
-    if (messageObj.type === "messageAdd") addMessage();
+    if (messageObj.type === "messageAdd") addMessage()
     else if (messageObj.type === "messageUpdate") {
       const updatedMessage = {
         messageText: messageObj.content,
@@ -38,20 +37,25 @@ export default function ChannelPage(props) {
       deleteMessage({ id: messageObj.id });
     }
 
-    if (messageObj.type === "channelUpdate") {
-      const updatedChannel = {
-        name: messageObj.content,
-        id: messageObj.id,
-      };
-      updateChannel({ updatedChannel });
-    } else if (messageObj.type === "channelDelete") {
-      deleteChannel({ id: messageObj.id });
-    }
+
+    // NECESSARY???
+    // if (messageObj.type === "channelUpdate") {
+    //   const updatedChannel = {
+    //     name: messageObj.content,
+    //     id: messageObj.id,
+    //   };
+    //   updateChannel({ updatedChannel });
+    // } else if (messageObj.type === "channelDelete") {
+    //   deleteChannel({ id: messageObj.id });
+    // }
+    //
   };
 
-  // MESSAGES
+  // GET messages
   const addMessage = () => {
-    setMessagesGET({ new: "new" });
+    fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
+      .then((response) => response.json())
+      .then((data) => setMessages(data));
   };
 
   const updateMessage = (data) => {

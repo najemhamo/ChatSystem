@@ -23,7 +23,7 @@ export default function MessageItem(props) {
     {
       // Create the new message
       const newMessage = document.getElementById("editedMessage").value    
-      if (newMessage.length === 0)
+      if (newMessage.length === 0 || newMessage === message.messageText)
       {
         setButtonText("Edit");
         return;

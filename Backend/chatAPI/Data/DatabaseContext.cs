@@ -21,7 +21,6 @@ namespace DataContext
             // Define composite key.
             modelBuilder.Entity<MemberChannel>().HasKey(uc => new { uc.MemberId, uc.ChannelId });
 
-<<<<<<< HEAD
             // Seed Users data
             modelBuilder.Entity<Member>().HasData(
                 new Member { Id = 1, Name = "Philip Nina", UserName = "philip", Email = "philip@example.com", Password = "Chat123", AboutMe = "I am a software developer", ProfilePicture = "https://fastly.picsum.photos/id/6/5000/3333.jpg?hmac=pq9FRpg2xkAQ7J9JTrBtyFcp9-qvlu8ycAi7bUHlL7I", Role = Roles.Member },
@@ -30,8 +29,7 @@ namespace DataContext
                 new Member { Id = 4, Name = "Katarina Ida", UserName = "kata_ida", Email = "kata_ida@example.com", Password = "Chat123", AboutMe = "Do you wanna be my next date?", ProfilePicture = "https://fastly.picsum.photos/id/65/4912/3264.jpg?hmac=uq0IxYtPIqRKinGruj45KcPPzxDjQvErcxyS1tn7bG0", Role = Roles.Member },
                  new Member { Id = 5, Name = "Admin", UserName = "admin", Email = "admin@example.com", Password = "Chat123", AboutMe = "I am an admin", ProfilePicture = "", Role = Roles.Admin }
             );
-=======
->>>>>>> main
+
             // Seed Channels data
             modelBuilder.Entity<Channel>().HasData(
                 new Channel { Id = 1, Name = "General" },

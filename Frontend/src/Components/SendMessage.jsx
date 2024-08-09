@@ -50,6 +50,8 @@ export default function SendMessage(props) {
           })
         );
       });
+
+      event.target.message.value = ""
   }
 
   return (
