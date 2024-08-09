@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { AuthContext } from "./App";
+import { AuthContext, UserContext } from "./App";
 import { SocketContext } from "./HomePage";
 
-export default function ProfilePage(props) {
-  const { updateUsers } = props;
+export default function ProfilePage() {
+  // const { updateUsers } = props;
   const { memberId } = useParams();
   const { user, setUser } = useContext(AuthContext);
+  const { users, setUsers } = useContext(UserContext);
   const { socket, updateChannel, deleteChannel } = useContext(SocketContext);
   const [buttonText, setButtonText] = useState("Edit");
   const [userProfile, setUserProfile] = useState({});
@@ -40,6 +41,15 @@ export default function ProfilePage(props) {
     // }
     //
   };
+
+  const updateUsers = (data) => {
+    const newUsers = users.map((usr) => {
+      if (usr.id === data.updatedUser.id) return data.updatedUser;
+      return usr;
+    });
+
+    setUsers(newUsers);
+  }
 
   const handleEdit = () => {
     if (buttonText === "Save")

@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
-import { SocketContext, UserContext } from "../HomePage";
-import { AuthContext } from "../App";
+import { SocketContext } from "../HomePage";
+import { AuthContext, UserContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 

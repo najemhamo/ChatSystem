@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "./App";
+import { AuthContext, UserContext } from "./App";
 import PropTypes from "prop-types";
 
 const INITIAL_USER_REGISTER = {
@@ -16,9 +16,9 @@ const INITIAL_USER = {
   password: "",
 };
 
-export default function LoginPage(props) {
-  const { users } = props;
+export default function LoginPage() {
   const { login } = useContext(AuthContext);
+  const { users } = useContext(UserContext);
   const [userForm, setUserForm] = useState(INITIAL_USER);
   const [userFormRegister, setUserFormRegister] = useState(
     INITIAL_USER_REGISTER
@@ -49,7 +49,7 @@ export default function LoginPage(props) {
             .text()
             .then((text) => setMessageRegister(JSON.parse(text)));
         else
-          return response.json().then((data) => {
+          return response.json().then(() => {
             setMessageRegister([{ description: "Register sucessfull!" }]);
           });
       }
@@ -77,6 +77,8 @@ export default function LoginPage(props) {
             const tmpUser = users.filter(
               (user) => user.userName === data.userName
             )[0];
+
+            console.log("DATA", data)
             login(tmpUser, data.token);
           });
       }

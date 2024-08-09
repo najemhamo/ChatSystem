@@ -6,6 +6,7 @@ import LoginPage from "./LoginPage";
 import HomePage from "./HomePage";
 
 export const AuthContext = createContext();
+export const UserContext = createContext();
 
 const loadUserDataFromStorage = () => {
   const userVal = localStorage.getItem("authUser");
@@ -51,10 +52,12 @@ function App() {
   return (
     <>
       <AuthContext.Provider value={{ user, setUser, authToken, login, logout }}>
-        <Routes>
-          <Route path="/login" element={<LoginPage users={users} />} />
-          <Route path="/*" element={<HomePage users={users} setUsers={setUsers}/>}/>
-        </Routes>
+        <UserContext.Provider value={{ users, setUsers }}>
+          <Routes>
+            <Route path="/login" element={<LoginPage/>} />
+            <Route path="/*" element={<HomePage/>}/>
+          </Routes>
+        </UserContext.Provider>
       </AuthContext.Provider>
     </>
   );

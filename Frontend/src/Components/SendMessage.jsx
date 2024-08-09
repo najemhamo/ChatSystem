@@ -20,8 +20,8 @@ export default function SendMessage(props) {
 
     const message = {
       messageText: newMessage,
-      channelId: channelId,
       memberId: user.id,
+      channelId: channelId,
     }
 
 
@@ -45,8 +45,7 @@ export default function SendMessage(props) {
         // Websocket send message
         socket.send(
           JSON.stringify({
-            type: "messageAdd",
-            content: message,
+            type: "messageAdd"
           })
         );
       });

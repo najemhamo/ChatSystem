@@ -19,6 +19,13 @@ export default function ChannelPage(props) {
       .then((data) => setMessages(data));
   }, [channelId]);
 
+  // GET messages
+  const addMessage = () => {
+    fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
+      .then((response) => response.json())
+      .then((data) => setMessages(data));
+  };
+
   // Socket
   socket.onmessage = function (event) {
     const messageObj = JSON.parse(event.data);
@@ -49,13 +56,6 @@ export default function ChannelPage(props) {
     //   deleteChannel({ id: messageObj.id });
     // }
     //
-  };
-
-  // GET messages
-  const addMessage = () => {
-    fetch(`http://localhost:5007/chat/channels/${channelId}/messages`)
-      .then((response) => response.json())
-      .then((data) => setMessages(data));
   };
 
   const updateMessage = (data) => {
