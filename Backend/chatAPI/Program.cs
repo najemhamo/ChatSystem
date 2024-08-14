@@ -95,20 +95,39 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy(name: "AllowAnyOrigin",
+//         policy =>
+//         {
+//             policy.AllowAnyOrigin()
+//             .AllowAnyMethod()
+//             .AllowAnyHeader()
+//             .AllowCredentials();
+//         });
+// });
+
+
+// //Connection to the frontend
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "AllowAnyOrigin",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-        });
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:5173")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
 });
 
+
 var app = builder.Build();
+
 app.UseWebSockets();
-app.UseCors("AllowAnyOrigin");
+
+app.UseRouting();
+
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -117,9 +136,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
 
 app.ConfigureChannelEndpoints();
+
 app.ConfigureAuthEndpoints();
 
 app.ApplyProjectMigrations();
