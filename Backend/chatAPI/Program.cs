@@ -9,6 +9,7 @@ using Repository;
 using Endpoints;
 using Services;
 using Models;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -137,6 +138,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.UseHttpsRedirection();
 

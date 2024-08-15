@@ -31,11 +31,14 @@ export default function ChannelItem(props) {
         })
       )
 
+      const token = localStorage.getItem("authToken")
+
       // UPDATE the channel name
       const putOptions = {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({name: channelName}),
       };
