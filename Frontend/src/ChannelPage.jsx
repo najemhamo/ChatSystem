@@ -101,19 +101,24 @@ export default function ChannelPage(props) {
               message={message}
               updateMessage={updateMessage}
               deleteMessage={deleteMessage}
-            />
+              />
           </li>
         ))}
       </ul>
-
       <SendMessage addMessage={addMessage} />
+
+      <div className="containerMember">
+        <nav className="sidebarMember">
+          <h2>Members online:</h2>
+        </nav>
+      </div>
     </>
   );
 }
 
 ChannelPage.propTypes = {
-  channels: PropTypes.array.isRequired,
-  socket: PropTypes.object.isRequired,
-  updateChannel: PropTypes.func.isRequired,
-  deleteChannel: PropTypes.func.isRequired,
+  channels: PropTypes.array,
+  socket: PropTypes.object,
+  updateChannel: PropTypes.func,
+  deleteChannel: PropTypes.func,
 };

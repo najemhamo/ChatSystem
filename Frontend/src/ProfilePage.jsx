@@ -124,13 +124,13 @@ export default function ProfilePage() {
       ></link>
 
       <h1>User Information</h1>
-      <div className="profileInfo">
-      {buttonText === "Edit" && <p>Username: {userProfile.userName}</p>}
-      {buttonText === "Edit" && <p>Name: {userProfile.name}</p>}
-      {buttonText === "Edit" && <p>About me: {userProfile.aboutMe}</p>}
-      </div>
-
       <div className="profile">
+        <div className="profileInfo">
+          {buttonText === "Edit" && <p>Username: {userProfile.userName}</p>}
+          {buttonText === "Edit" && <p>Name: {userProfile.name}</p>}
+          {buttonText === "Edit" && <p>About me: {userProfile.aboutMe}</p>}
+        </div>
+
         {buttonText === "Save" &&
         <div>
           <input
@@ -170,21 +170,24 @@ export default function ProfilePage() {
                 : userProfile.profilePicture
             }
           ></input>
-          </div>
+        </div>
         }
 
-        <img
-          className="profileInputs profileImage"
-          src={userProfile.profilePicture}
-        ></img>
-      </div>
+        <div className="userImage">
+          <img
+            className="profileInputs profileImage"
+            src={userProfile.profilePicture}
+          ></img>
+        </div>
 
+      </div>
       <div>
         {ownUserProfile && (
-          <button onClick={handleEdit}>
-            <i className="fa fa-bars"></i> {buttonText}
+          <button className="profileEdit" onClick={handleEdit}>
+            {buttonText === "Edit" && <i className="fa fa-bars"></i>}
+            {buttonText === "Save" && <i>&#10003;</i>}
           </button>
-        )}
+          )}
       </div>
     </>
   );

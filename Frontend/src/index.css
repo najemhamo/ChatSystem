@@ -58,20 +58,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #37393f;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #b9bbbe;
-  }
-}
-
-/* Home Page */
 /* General styles */
 body,
 html {
@@ -81,84 +67,90 @@ html {
   height: 100%;
 }
 
+/* Home Page */
 .container {
   display: flex;
+  flex-direction: column;
 }
 
 .sideNavbar {
   background-color: #202225;
   color: #fff;
-  padding: 20px;
-  width: 250px;
+  padding: 2vw;
   height: 100vh;
-  flex-direction: column;
+  width: 15vw;
   position: fixed;
   top: 0;
   left: 0;
 }
-.sidenav a:hover {
-  color: #f1f1f1;
+.sideNavbar li:hover {
+  cursor: pointer;
 }
 
-.profileBar {
-  background-color: #292b2f;
-  color: #fff;
-  padding: 20px;
-  align-items: center;
-  justify-content: space-between;
-  width: 250px;
-  position: fixed;
-  flex-direction: column;
-  left: 0;
-  bottom: 0;
-}
-
+/* CHANNELS */
 .channels {
   list-style-type: none;
   padding: 0;
 }
 
-.channels li {
-  margin-bottom: 10px;
+.fixChannel {
+  display: flex;
+  justify-content: space-between;
 }
 
-.profile {
-  margin-top: auto;
+.fixChannel p {
+  font-size: 1.5vw;
 }
 
-/* .profile img {
-  width: 50px;
-  height: 50px;
+.fixChannel div {
+  align-self: center;
+}
+
+.fixChannel div i {
+  padding-left: 1vw;
+  font-size: 1vw;
+}
+
+.fixChannel input {
+  font-size: 1.5vw;
+  width: 10vw;
+  margin-top: 1.8vw;
+  margin-bottom: 1.5vw;
+}
+
+/* USER PROFILE */
+.navbarProfile {
+  position: fixed;
+  bottom: 0;
+  width: 15vw;
+}
+
+.navbarProfile p {
+  font-size: 2vw;
+  cursor: pointer;
+  margin-top: 1vw;
+  margin-bottom: 0.5vw;
+}
+
+.navbarProfile img {
+  width: 7vw;
+  height: 7vw;
   border-radius: 50%;
-} */
+  float: left;
+}
 
 .logoutButton {
-  display: inline-block;
-  width: 100%;
-  padding: 10px 10px;
-  background-color: #7289da;
   color: #fff;
-  border: none;
-  border-radius: 5px;
+  background-color: #7289da;
   cursor: pointer;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  font-size: 0.8vw;
+  margin-bottom: 2vw;
 }
 
-.editButton {
-  display: inline-block;
-  width: 40%;
-  padding: 5px 10px;
-  background-color: #7289da;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 10px;
-  margin-left: 10px;
-}
 
-.meesageButton {
+
+/* CHECK THIS!!! */
+/* .meesageButton {
   display: inline-block;
   width: 5%;
   padding: 5px 5px;
@@ -168,12 +160,8 @@ html {
   border-radius: 5px;
   cursor: pointer;
   margin-left: 10px;
-}
+} */
 
-.logoutButton:hover,
-.editButton:hover {
-  background-color: #677bc4;
-}
 
 /* Main content styles */
 .mainContent {

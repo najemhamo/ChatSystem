@@ -67,29 +67,29 @@ export default function HomePage() {
   const onAddChannel = () =>
   {
     // POST new channel
-    const postOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({name: "New Channel"}),
-    };
+    // const postOptions = {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({name: "New Channel"}),
+    // };
 
-    fetch(
-      `http://localhost:5007/chat/channels`,
-      postOptions
-    )
-      .then((response) => response.json())
-      .then(() => {
-        addChannel()
+    // fetch(
+    //   `http://localhost:5007/chat/channels`,
+    //   postOptions
+    // )
+    //   .then((response) => response.json())
+    //   .then(() => {
+    //     addChannel()
 
-        // Websocket new channel
-        socket.send(
-          JSON.stringify({
-            type: "channelAdd"
-          })
-        );
-      });
+    //     // Websocket new channel
+    //     socket.send(
+    //       JSON.stringify({
+    //         type: "channelAdd"
+    //       })
+    //     );
+    //   });
   }
 
   // SOCKET
@@ -124,35 +124,34 @@ export default function HomePage() {
             ))}
           </ul>
           <button onClick={onAddChannel}>+</button>
-        </nav>
 
-        <div className="profileBar">
-          <img
-            src={user && user.profilePicture}
-            width={180}
-            height={150}
-          ></img>
-          <p onClick={() => navigate(`/users/${user.id}`)}>
-            {user && user.userName}
-          </p>
-          <button className="logoutButton" onClick={logout}>
-            Logout
-          </button>
-        </div>
+          <div className="navbarProfile">
+            <div>
+            <img src={user && user.profilePicture}></img>
+              
+            <p onClick={() => navigate(`/users/${user.id}`)}>
+              {user && user.userName}
+            </p>
+            </div>
+            <button className="logoutButton" onClick={logout}>
+              Logout
+            </button>
+          </div>
+        </nav>
       </div>
-        <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
-          <Routes>
-            <Route path="/channel/:channelId" element={<ChannelPage channels={channels}/>}/>
-            <Route path="/users/:memberId" element={<ProfilePage/>}/>
-          </Routes>
-        </SocketContext.Provider>
+      <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
+        <Routes>
+          <Route path="/channel/:channelId" element={<ChannelPage channels={channels}/>}/>
+          <Route path="/users/:memberId" element={<ProfilePage/>}/>
+        </Routes>
+      </SocketContext.Provider>
     </>
   );
 }
 
 HomePage.propTypes = {
-  user: PropTypes.object.isRequired,
-  logout: PropTypes.func.isRequired,
-  users: PropTypes.array.isRequired,
-  setUsers: PropTypes.func.isRequired,
+  user: PropTypes.object,
+  logout: PropTypes.func,
+  users: PropTypes.array,
+  setUsers: PropTypes.func,
 };

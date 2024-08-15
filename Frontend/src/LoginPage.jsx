@@ -184,5 +184,5 @@ export default function LoginPage() {
 }
 
 LoginPage.propTypes = {
-  users: PropTypes.array.isRequired,
+  users: PropTypes.array,
 };

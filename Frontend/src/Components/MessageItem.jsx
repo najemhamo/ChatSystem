@@ -92,7 +92,6 @@ export default function MessageItem(props) {
       ></link>
 
       <div>
-
         <div className="userTime">
           <p
             className="usernameText"
@@ -103,16 +102,18 @@ export default function MessageItem(props) {
           <p className="time">{message.createdAt}</p>
         </div>
 
-        <div>
-          {buttonText === "Edit" && <p className={ownMessage ? "messageTexting textFix" : "messageTexting"}>{message && message.messageText}</p>}
-          {buttonText === "Save" && <input className="messageTexting textFix" id="editedMessage" type="text" name="editedMessage" defaultValue={message.messageText}></input>}
+        <div className="messageContainer">
+          {buttonText === "Edit" && <p>{message && message.messageText}</p>}
+          {buttonText === "Save" && <input id="editedMessage" type="text" name="editedMessage" defaultValue={message.messageText}></input>}
 
+          <div>
             {ownMessage &&
             <>
-              <button className="messageBth messageEdit" onClick={handleEdit}><i className="fa fa-bars"></i></button>
-              <button className="messageBth" onClick={handleDelete}><i className="fa fa-trash"></i></button>
+              {buttonText === "Edit" && <i className="fa fa-bars" onClick={handleEdit}></i>}
+              {buttonText === "Save" && <i onClick={handleEdit}>&#10003;</i>}
+              <i className="fa fa-trash" onClick={handleDelete}></i>
             </>}
-
+          </div>
         </div>
       </div>
     </>
@@ -120,8 +121,8 @@ export default function MessageItem(props) {
 }
 
 MessageItem.propTypes = {
-  message: PropTypes.object.isRequired,
-  socket: PropTypes.object.isRequired,
-  updateMessage: PropTypes.func.isRequired,
-  deleteMessage: PropTypes.func.isRequired,
+  message: PropTypes.object,
+  socket: PropTypes.object,
+  updateMessage: PropTypes.func,
+  deleteMessage: PropTypes.func,
 };

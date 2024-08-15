@@ -17,7 +17,7 @@ export default function HomeSocketPage()
 }
 
 HomeSocketPage.propTypes = {
-  socket: PropTypes.object.isRequired,
-  updateChannel: PropTypes.func.isRequired,
-  deleteChannel: PropTypes.func.isRequired,
+  socket: PropTypes.object,
+  updateChannel: PropTypes.func,
+  deleteChannel: PropTypes.func,
 };

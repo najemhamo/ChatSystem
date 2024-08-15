@@ -13,38 +13,38 @@ export default function ChannelItem(props) {
     if (buttonText === "Save")
     {
       // Create the new channel name
-      const channelName = document.getElementById("editedChannel").value    
-      if (channelName.length === 0 || channelName === channel.name)
-      {
-        setButtonText("Edit");
-        return;
-      }
-      channel.name = channelName
-      const updatedChannel = channel
+      // const channelName = document.getElementById("editedChannel").value    
+      // if (channelName.length === 0 || channelName === channel.name)
+      // {
+      //   setButtonText("Edit");
+      //   return;
+      // }
+      // channel.name = channelName
+      // const updatedChannel = channel
 
       // Websocket edit channel
-      socket.send(
-      JSON.stringify({
-        type: "channelUpdate",
-        content: channelName,
-        id: channel.id,
-        })
-      )
+      // socket.send(
+      // JSON.stringify({
+      //   type: "channelUpdate",
+      //   content: channelName,
+      //   id: channel.id,
+      //   })
+      // )
 
-      const token = localStorage.getItem("authToken")
+      // const token = localStorage.getItem("authToken")
 
       // UPDATE the channel name
-      const putOptions = {
-        method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({name: channelName}),
-      };
+      // const putOptions = {
+      //   method: "PUT",
+      //   headers: {
+      //     "Authorization": `Bearer ${token}`,
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify({name: channelName}),
+      // };
 
-      fetch(`http://localhost:5007/chat/channels/${channel.id}`, putOptions)
-      updateChannel({ updatedChannel });
+      // fetch(`http://localhost:5007/chat/channels/${channel.id}`, putOptions)
+      // updateChannel({ updatedChannel });
       setButtonText("Edit");
     } else setButtonText("Save");
   };
@@ -52,29 +52,29 @@ export default function ChannelItem(props) {
   const handleDelete = () => 
   {
     // Delete channel Websocket
-    socket.send(
-      JSON.stringify({
-        type: "channelDelete",
-        content: "",
-        id: channel.id,
-      })
-    );
-    deleteChannel({ id: channel.id });
+    // socket.send(
+    //   JSON.stringify({
+    //     type: "channelDelete",
+    //     content: "",
+    //     id: channel.id,
+    //   })
+    // );
+    // deleteChannel({ id: channel.id });
 
 
     // DELETE channel
-    const deleteOptions = {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(channel),
-    };
+    // const deleteOptions = {
+    //   method: "DELETE",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(channel),
+    // };
 
-    fetch(
-      `http://localhost:5007/chat/channels/${channel.id}?id=${channel.id}`,
-      deleteOptions
-    );
+    // fetch(
+    //   `http://localhost:5007/chat/channels/${channel.id}?id=${channel.id}`,
+    //   deleteOptions
+    // );
   };
 
   return (
@@ -85,34 +85,39 @@ export default function ChannelItem(props) {
       ></link>
 
       {buttonText === "Edit" && (
-        <p onClick={() => navigate(`/channel/${channel.id}`)}>{channel.name}</p>
+        <div className="fixChannel">
+          <p onClick={() => navigate(`/channel/${channel.id}`)}>{channel.name}</p>
+          {admin &&
+          <div>
+            <i className="fa fa-bars" onClick={handleEdit}></i>
+            <i className="fa fa-trash" onClick={handleDelete}></i>
+          </div>
+          }
+        </div>
       )}
       {buttonText === "Save" && (
-        <input
-          id="editedChannel"
-          type="text"
-          defaultValue={channel.name}
-        ></input>
+        <div className="fixChannel">
+          <input
+            id="editedChannel"
+            type="text"
+            defaultValue={channel.name}
+          ></input>
+          {admin &&
+          <div>
+            <i onClick={handleEdit}> &#10003;</i>
+            <i className="fa fa-trash" onClick={handleDelete}></i>
+          </div>
+          }
+        </div>
       )}
-
-      {admin && 
-      <div className="channelButtons">
-        <button className="editButton" onClick={handleEdit}>
-          <i className="fa fa-bars"></i> {buttonText}
-        </button>
-        <button className="editButton" onClick={handleDelete}>
-          <i className="fa fa-trash"></i> Delete
-        </button>
-      </div>
-      }
     </>
   );
 }
 
 ChannelItem.propTypes = {
-  channel: PropTypes.object.isRequired,
-  admin: PropTypes.bool.isRequired,
-  socket: PropTypes.object.isRequired,
-  updateChannel: PropTypes.func.isRequired,
-  deleteChannel: PropTypes.func.isRequired,
+  channel: PropTypes.object,
+  admin: PropTypes.bool,
+  socket: PropTypes.object,
+  updateChannel: PropTypes.func,
+  deleteChannel: PropTypes.func,
 };
