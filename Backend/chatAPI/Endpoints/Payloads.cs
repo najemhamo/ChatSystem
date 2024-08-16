@@ -8,7 +8,7 @@ namespace Endpoints
     public record UpdateMessagePayload(string MessageText);
     public record CreateOrUpdateChannelPayload(string Name);
 
-    public record RegisterUserPayload(string Name, string UserName, string Email, string Password, string AboutMe, string ProfilePicture, Roles Role);
+    public record RegisterUserPayload(string Name, string UserName, string Email, string Password, string AboutMe, string ProfilePicture);
     public record LoginUserPayload(string UserName, string Password);
     public record AuthenticateUserResponse(string Token, string UserName, Roles Role);
 }

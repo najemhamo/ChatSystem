@@ -4,6 +4,6 @@ namespace Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public Roles Role { get; set;}
+        public Roles Role { get; set; }
     }
 }
