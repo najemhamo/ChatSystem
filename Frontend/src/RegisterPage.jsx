@@ -50,10 +50,11 @@ export default function RegisterPage()
     };
 
     const handleClickRegister = () => {
+      if (userFormRegister.name === "" || userFormRegister.userName === "")
+        setMessageRegister([{ description: "Need a name and username" }])
+      else
         setUserRegister(userFormRegister);
     };
-
-
 
     return (<>
     <div className="login">
