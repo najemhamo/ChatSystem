@@ -13,38 +13,38 @@ export default function ChannelItem(props) {
     if (buttonText === "Save")
     {
       // Create the new channel name
-      // const channelName = document.getElementById("editedChannel").value    
-      // if (channelName.length === 0 || channelName === channel.name)
-      // {
-      //   setButtonText("Edit");
-      //   return;
-      // }
-      // channel.name = channelName
-      // const updatedChannel = channel
+      const channelName = document.getElementById("editedChannel").value    
+      if (channelName.length === 0 || channelName === channel.name)
+      {
+        setButtonText("Edit");
+        return;
+      }
+      channel.name = channelName
+      const updatedChannel = channel
 
       // Websocket edit channel
-      // socket.send(
-      // JSON.stringify({
-      //   type: "channelUpdate",
-      //   content: channelName,
-      //   id: channel.id,
-      //   })
-      // )
+      socket.send(
+      JSON.stringify({
+        type: "channelUpdate",
+        content: channelName,
+        id: channel.id,
+        })
+      )
 
-      // const token = localStorage.getItem("authToken")
+      const token = localStorage.getItem("authToken")
 
       // UPDATE the channel name
-      // const putOptions = {
-      //   method: "PUT",
-      //   headers: {
-      //     "Authorization": `Bearer ${token}`,
-      //     "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify({name: channelName}),
-      // };
+      const putOptions = {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({name: channelName}),
+      };
 
-      // fetch(`http://localhost:5007/chat/channels/${channel.id}`, putOptions)
-      // updateChannel({ updatedChannel });
+      fetch(`http://localhost:5007/chat/channels/${channel.id}`, putOptions)
+      updateChannel({ updatedChannel });
       setButtonText("Edit");
     } else setButtonText("Save");
   };
