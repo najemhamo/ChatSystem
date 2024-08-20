@@ -12,6 +12,7 @@ using Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -41,21 +42,23 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 
-builder.Services.AddDbContext<DatabaseContext>(opt =>
-    {
-        opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString"));
-    });
 
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<TokenService, TokenService>();
 builder.Services.AddSingleton<ChatService>();
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    {
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString"));
+    });
 
+
+// Specify identity requirements
+// Must be added before .AddAuthentication otherwise a 404 is thrown on authorized endpoints
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
         options.User.RequireUniqueEmail = true;
-
         options.Password.RequireDigit = false;
         options.Password.RequiredLength = 6;
         options.Password.RequireNonAlphanumeric = false;
@@ -95,18 +98,6 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy(name: "AllowAnyOrigin",
-//         policy =>
-//         {
-//             policy.AllowAnyOrigin()
-//             .AllowAnyMethod()
-//             .AllowAnyHeader()
-//             .AllowCredentials();
-//         });
-// });
-
 
 // //Connection to the frontend
 builder.Services.AddCors(options =>
@@ -119,7 +110,6 @@ builder.Services.AddCors(options =>
                .AllowCredentials();
     });
 });
-
 
 var app = builder.Build();
 
@@ -140,8 +130,8 @@ app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
-app.ConfigureChannelEndpoints();
 
+app.ConfigureChannelEndpoints();
 app.ConfigureAuthEndpoints();
 
 app.ApplyProjectMigrations();

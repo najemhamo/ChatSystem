@@ -11,36 +11,61 @@ namespace Endpoints
         public static void ConfigureAuthEndpoints(this WebApplication app)
         {
             var auth = app.MapGroup("Authentication");
-            auth.MapPost("/register", Register);
+            auth.MapPost("/registerMember", RegisterMember);
+            auth.MapPost("/registerAdmin", RegisterAdmin);
             auth.MapPost("/login", Login);
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        private static async Task<IResult> Register(UserManager<ApplicationUser> userManager, [FromBody] RegisterUserPayload payload, IChatRepository chatRepository)
+        private static async Task<IResult> RegisterMember(UserManager<ApplicationUser> userManager, [FromBody] RegisterUserPayload payload, IChatRepository chatRepository)
         {
             if (payload.UserName == null) return TypedResults.BadRequest("Username is required");
             if (payload.Password == null) return TypedResults.BadRequest("Password is required");
             if (payload.Name == null) return TypedResults.BadRequest("Name is required");
             if (payload.Email == null) return TypedResults.BadRequest("Email is required");
 
-            // Set the default role if no role is provided
-            var userRole = payload.Role != null ? payload.Role : Roles.Member; // Default role is Roles.Member
-
             // Register the user in the database for the Authentication
             var result = await userManager.CreateAsync(new ApplicationUser
             {
                 UserName = payload.UserName,
                 Email = payload.Email,
-                Role = userRole
+                Role = Roles.Member
 
             }, payload.Password!);
 
             if (result.Succeeded)
             {
                 // Create a member in the database
-                await chatRepository.CreateMember(new CreateMemberPayload(payload.Name, payload.UserName, payload.Email, payload.Password, payload.AboutMe, payload.ProfilePicture, userRole));
-                return TypedResults.Created($"/auth/", new { payload.UserName, role = userRole });
+                await chatRepository.CreateMember(new CreateMemberPayload(payload.Name, payload.UserName, payload.Email, payload.Password, payload.AboutMe, payload.ProfilePicture, Roles.Member));
+                return TypedResults.Created($"/auth/", new { payload.UserName, role = Roles.Member });
+            }
+            return Results.BadRequest(result.Errors);
+        }
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        private static async Task<IResult> RegisterAdmin(UserManager<ApplicationUser> userManager, [FromBody] RegisterUserPayload payload, IChatRepository chatRepository)
+        {
+            if (payload.UserName == null) return TypedResults.BadRequest("Username is required");
+            if (payload.Password == null) return TypedResults.BadRequest("Password is required");
+            if (payload.Name == null) return TypedResults.BadRequest("Name is required");
+            if (payload.Email == null) return TypedResults.BadRequest("Email is required");
+
+            // Register the user in the database for the Authentication
+            var result = await userManager.CreateAsync(new ApplicationUser
+            {
+                UserName = payload.UserName,
+                Email = payload.Email,
+                Role = Roles.Admin
+
+            }, payload.Password!);
+
+            if (result.Succeeded)
+            {
+                // Create a member in the database
+                await chatRepository.CreateMember(new CreateMemberPayload(payload.Name, payload.UserName, payload.Email, payload.Password, payload.AboutMe, payload.ProfilePicture, Roles.Admin));
+                return TypedResults.Created($"/auth/", new { payload.UserName, role = Roles.Admin });
             }
             return Results.BadRequest(result.Errors);
         }
@@ -72,7 +97,6 @@ namespace Endpoints
 
             var accessToken = tokenService.CreateToken(userInDb);
             return TypedResults.Ok(new AuthenticateUserResponse(accessToken, userInDb.UserName, userInDb.Role));
-
         }
     }
 }

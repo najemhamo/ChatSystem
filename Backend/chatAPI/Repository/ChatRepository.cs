@@ -225,12 +225,6 @@ namespace Repository
             return member;
         }
 
-        public async Task ResetDatabase()
-        {
-            await _context.Database.EnsureDeletedAsync();
-            await _context.Database.EnsureCreatedAsync();
-        }
-
     }
 }
 

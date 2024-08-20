@@ -26,8 +26,5 @@ namespace Repository
         public ApplicationUser? GetUser(string userName);
         Task<MemberChannel> AddMemberToChannel(int memberId, int channelId);
 
-        // Reset the database and delete all the data
-        Task ResetDatabase();
-
     }
 }
