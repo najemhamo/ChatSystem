@@ -38,16 +38,8 @@ namespace DataContext
                 new Channel { Id = 4, Name = "Random" }
             );
 
-            /*
-            // Seed Users data
-            modelBuilder.Entity<Member>().HasData(
-                new Member { Id = 1, Name = "Philip Nina", UserName = "philip", Email = "philip@example.com", Password = "Chat123", AboutMe = "I am a software developer", ProfilePicture = "https://fastly.picsum.photos/id/6/5000/3333.jpg?hmac=pq9FRpg2xkAQ7J9JTrBtyFcp9-qvlu8ycAi7bUHlL7I", Role = Roles.Member },
-                new Member { Id = 2, Name = "Carolin Svensson", UserName = "caro", Email = "caro@example.com", Password = "Chat123", AboutMe = "Follow me on Twitter", ProfilePicture = "https://fastly.picsum.photos/id/20/3670/2462.jpg?hmac=CmQ0ln-k5ZqkdtLvVO23LjVAEabZQx2wOaT4pyeG10I", Role = Roles.Member },
-                new Member { Id = 3, Name = "Mattias Eriksson", UserName = "matt", Email = "matt@example.com", Password = "Chat123", AboutMe = "I am a photographer", ProfilePicture = "https://fastly.picsum.photos/id/29/4000/2670.jpg?hmac=rCbRAl24FzrSzwlR5tL-Aqzyu5tX_PA95VJtnUXegGU", Role = Roles.Member },
-                new Member { Id = 4, Name = "Katarina Ida", UserName = "kata_ida", Email = "kata_ida@example.com", Password = "Chat123", AboutMe = "Do you wanna be my next date?", ProfilePicture = "https://fastly.picsum.photos/id/65/4912/3264.jpg?hmac=uq0IxYtPIqRKinGruj45KcPPzxDjQvErcxyS1tn7bG0", Role = Roles.Member }
-            );
-            */
 
+<<<<<<< HEAD
 
             /*
             // Seed Messages data
@@ -110,6 +102,8 @@ namespace DataContext
             adminUser.PasswordHash = hasher.HashPassword(adminUser, "Chat123");
             usersAccounts.HasData(adminUser);
             */
+=======
+>>>>>>> 67-backend---cors-policy
         }
 
         public DbSet<Member> Members { get; set; }
