@@ -115,6 +115,10 @@ var app = builder.Build();
 
 app.UseWebSockets();
 
+app.UseRouting();
+
+app.UseCors();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -122,10 +126,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
-app.UseAuthentication();
+
+app.UseHttpsRedirection();
 
 
 app.ConfigureChannelEndpoints();
