@@ -124,8 +124,8 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
-          
-          {user.role === 1 && <button className="addBtn" onClick={onAddChannel}>+</button>}
+
+          {user && user.role === 1 && <button className="addBtn" onClick={onAddChannel}>+</button>}
 
           <div className="navbarProfile">
             <div>

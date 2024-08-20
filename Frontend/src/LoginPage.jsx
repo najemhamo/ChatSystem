@@ -1,15 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext, UserContext } from "./App";
 import PropTypes from "prop-types";
-
-const INITIAL_USER_REGISTER = {
-  name: "",
-  userName: "",
-  email: "",
-  password: "",
-  aboutMe: "",
-  profilePicture: "",
-};
+import { useNavigate } from "react-router-dom";
 
 const INITIAL_USER = {
   userName: "",
@@ -19,42 +11,11 @@ const INITIAL_USER = {
 export default function LoginPage() {
   const { login } = useContext(AuthContext);
   const { users } = useContext(UserContext);
-  const [userForm, setUserForm] = useState(INITIAL_USER);
-  const [userFormRegister, setUserFormRegister] = useState(
-    INITIAL_USER_REGISTER
-  );
 
+  const navigate = useNavigate()
   const [userLogin, setUserLogin] = useState({});
-  const [userRegister, setUserRegister] = useState({});
-
   const [messageLogin, setMessageLogin] = useState("");
-  const [messageRegister, setMessageRegister] = useState([]);
-
-  // Register
-  useEffect(() => {
-    if (!userRegister.userName) return;
-
-    const postOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userRegister),
-    };
-
-    fetch(`http://localhost:5007/Authentication/register`, postOptions).then(
-      (response) => {
-        if (!response.ok)
-          return response
-            .text()
-            .then((text) => setMessageRegister(JSON.parse(text)));
-        else
-          return response.json().then(() => {
-            setMessageRegister([{ description: "Register sucessfull!" }]);
-          });
-      }
-    );
-  }, [userRegister]);
+  const [userForm, setUserForm] = useState(INITIAL_USER);
 
   // Login
   useEffect(() => {
@@ -78,21 +39,13 @@ export default function LoginPage() {
               (user) => user.userName === data.userName
             )[0];
 
+            console.log("DATA", tmpUser)
+            tmpUser.password = undefined
             login(tmpUser, data.token);
           });
       }
     );
   }, [userLogin]);
-
-  // REGISTER
-  const handleInputRegister = (event) => {
-    const { name, value } = event.target;
-    setUserFormRegister({ ...userFormRegister, [name]: value });
-  };
-
-  const handleClickRegister = () => {
-    setUserRegister(userFormRegister);
-  };
 
   // LOGIN
   const handleInput = (event) => {
@@ -106,76 +59,28 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="register">
-        <h2 className="registerInputs registerH2">Register</h2>
+      <div className="login">
+        <h2>Login</h2>
         <input
-          className="registerInputs"
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={userFormRegister.name}
-          onChange={handleInputRegister}
-        ></input>
-        <input
-          className="registerInputs"
           type="text"
           name="userName"
           placeholder="UserName"
-          value={userFormRegister.userName}
-          onChange={handleInputRegister}
+          value={userForm.userName}
+          onChange={handleInput}
         ></input>
         <input
-          className="registerInputs"
-          type="text"
-          name="email"
-          placeholder="Email"
-          value={userFormRegister.email}
-          onChange={handleInputRegister}
-        ></input>
-        <input
-          className="registerInputs"
           type="password"
           name="password"
           placeholder="Password"
-          value={userFormRegister.password}
-          onChange={handleInputRegister}
+          value={userForm.password}
+          onChange={handleInput}
         ></input>
-        {messageRegister.map((message, index) => (
-          <p className="registerInputs" key={index}>
-            {message.description}
-          </p>
-        ))}
-        <button
-          className="registerInputs registerBtn"
-          onClick={handleClickRegister}
-        >
-          Register
-        </button>
-      </div>
-
-      <div className="register">
-        <h2 className="registerInputs loginH2">Login</h2>
-        <div className="loginInput">
-          <input
-            className="registerInputs"
-            type="text"
-            name="userName"
-            placeholder="UserName"
-            value={userForm.userName}
-            onChange={handleInput}
-          ></input>
-          <input
-            className="registerInputs"
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={userForm.password}
-            onChange={handleInput}
-          ></input>
-          <p className="registerInputs">{messageLogin}</p>
-        </div>
-        <button className="registerInputs loginBth" onClick={handleClick}>
+        <p>{messageLogin}</p>
+        <button onClick={handleClick}>
           Login
+        </button>
+        <button className="registerBtn" onClick={() => navigate("/register")}>
+          Not a user? Register
         </button>
       </div>
     </>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createContext } from "react";
 import LoginPage from "./LoginPage";
 import HomePage from "./HomePage";
+import RegisterPage from "./RegisterPage";
 
 export const AuthContext = createContext();
 export const UserContext = createContext();
@@ -31,7 +32,7 @@ function App() {
 
   useEffect(() => {
     if (!user) navigate("/login");
-  }, [user, navigate]);
+  }, [user]);
 
   const login = (user, authToken) => {
     setUser(user);
@@ -55,6 +56,7 @@ function App() {
         <UserContext.Provider value={{ users, setUsers }}>
           <Routes>
             <Route path="/login" element={<LoginPage/>} />
+            <Route path="/register" element={<RegisterPage/>} ></Route>
             <Route path="/*" element={<HomePage/>}/>
           </Routes>
         </UserContext.Provider>

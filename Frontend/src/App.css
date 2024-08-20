@@ -21,33 +21,37 @@
 
 
 /* LOGIN PAGE */
-
-.register {
-  display: inline-block;
-}
-
-.registerInputs {
-  display: block;
-  margin-top: 10px;
-  color: white;
-}
-
-.loginInputs {
+.login {
   display: flex;
+  flex-direction: column;
 }
 
-.loginInput {
-  margin-bottom: 72px;
-  margin-left: 50px;
+.login h2 {
+  color: white;
+  font-size: 3vw;
 }
 
-.loginBth {
-  margin-left: 90px;
+.login input {
+  margin-left: 0.5vw;
+  margin-right: 0.5vw;
+  font-size: 1vw;
+  margin-bottom: 0.8vw;
+}
+
+.login p {
+  font-size: 1vw;
+}
+
+.login button {
+  font-size: 1vw;
 }
 
 .registerBtn {
-  margin-left: 40px;
+  margin-top: 1vw;
+  background-color: rgb(75, 140, 224);
+  font-size: 1vw;
 }
+
 
 
 /* MESSAGE ITEM */
