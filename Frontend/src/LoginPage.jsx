@@ -39,7 +39,6 @@ export default function LoginPage() {
               (user) => user.userName === data.userName
             )[0];
 
-            console.log("DATA", tmpUser)
             tmpUser.password = undefined
             login(tmpUser, data.token);
           });

@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { AuthContext, UserContext } from "./App";
 import { SocketContext } from "./HomePage";
 
+
 export default function ProfilePage() {
-  // const { updateUsers } = props;
   const { memberId } = useParams();
   const { user, setUser } = useContext(AuthContext);
   const { users, setUsers } = useContext(UserContext);
@@ -106,39 +106,31 @@ export default function ProfilePage() {
 
   return (
     <>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-      ></link>
-
-      <h1>User Information</h1>
       <div className="profile">
-        <div className="profileInfo">
+        <h1>User Information</h1>
+        <div className="">
           {buttonText === "Edit" && <p>Username: {userProfile.userName}</p>}
           {buttonText === "Edit" && <p>Name: {userProfile.name}</p>}
           {buttonText === "Edit" && <p>About me: {userProfile.aboutMe}</p>}
         </div>
 
         {buttonText === "Save" &&
-        <div>
+        <>
           <input
-            className="profileInputs profileInputsWrite"
             id="userName"
             name="userName"
             type="text"
             defaultValue={userProfile.userName}
-            ></input>
+          ></input>
 
           <input
-            className="profileInputs profileInputsWrite"
             id="name"
             name="name"
             type="text"
             defaultValue={userProfile.name === "" ? "Name" : userProfile.name}
-            ></input>
+          ></input>
 
-            <input
-            className="profileInputs profileInputsWrite"
+          <input
             id="aboutMe"
             name="aboutMe"
             type="text"
@@ -147,8 +139,7 @@ export default function ProfilePage() {
             }
           ></input>
 
-            <input
-            className="profileInputs profileInputsWrite"
+          <input
             id="profilePicture"
             name="profilePicture"
             type="text"
@@ -158,12 +149,11 @@ export default function ProfilePage() {
                 : userProfile.profilePicture
             }
           ></input>
-        </div>
+        </>
         }
 
         <div className="userImage">
           <img
-            className="profileInputs profileImage"
             src={userProfile.profilePicture}
           ></img>
         </div>

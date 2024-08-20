@@ -56,7 +56,7 @@ function App() {
         <UserContext.Provider value={{ users, setUsers }}>
           <Routes>
             <Route path="/login" element={<LoginPage/>} />
-            <Route path="/register" element={<RegisterPage/>} ></Route>
+            <Route path="/register" element={<RegisterPage/>} />
             <Route path="/*" element={<HomePage/>}/>
           </Routes>
         </UserContext.Provider>

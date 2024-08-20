@@ -153,35 +153,4 @@
   display: inline-block;
 }
 
-
-
-/* PROFILE PAGE */
-
-.profileInputs {
-  display: block;
-  margin: 1vw;
-}
-
-.profileInputsWrite {
-  margin-left: 2vw;
-}
-
-.profileInfo {
-  font-size: 1.5vw;
-}
-
-.userImage {
-  text-align: center;
-}
-
-.profileImage {
-  width: 15vw;
-  height: 20vw;
-}
-
-.profileEdit {
-  font-size: 1vw;
-  background-color: #7289da;
-}
-
 }

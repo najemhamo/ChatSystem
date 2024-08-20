@@ -18,6 +18,7 @@ a {
   color: #ffffff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #b9bbbe;
 }
@@ -53,6 +54,7 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -84,6 +86,7 @@ html {
   top: 0;
   left: 0;
 }
+
 .sideNavbar li:hover {
   cursor: pointer;
 }
@@ -104,7 +107,6 @@ html {
 .fixChannel {
   display: flex;
   justify-content: space-between;
-  /* background-color: red; */
 }
 
 .fixChannel p {
@@ -160,20 +162,39 @@ html {
   margin-bottom: 2vw;
 }
 
+/* PROFILE PAGE */
+.profile {
+  display: flex;
+  flex-direction: column;
+  height: 40vw;
+}
 
+.profile h1 {
+  font-size: 3.5vw;
+  margin-bottom: 0.5vw;
+}
 
-/* CHECK THIS!!! */
-/* .meesageButton {
-  display: inline-block;
-  width: 5%;
-  padding: 5px 5px;
-  background-color: #37393f;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 10px;
-} */
+.profile input {
+  font-size: 1vw;
+  margin-top: 1vw;
+  margin-bottom: 1vw;
+  text-align: center;
+}
+
+.profile div p {
+  font-size: 1.5vw;
+}
+
+.userImage img {
+  height: 20vw;
+  margin-top: 0.5vw;
+}
+
+.profileEdit {
+  font-size: 1vw;
+  margin-top: 2vw;
+}
+
 
 
 /* Main content styles */
@@ -187,6 +208,7 @@ html {
   .container {
     flex-direction: column;
   }
+
   .sideNavbar {
     width: 100%;
     order: 2;
