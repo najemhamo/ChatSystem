@@ -9,7 +9,6 @@ using Repository;
 using Endpoints;
 using Services;
 using Models;
-using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,9 +47,9 @@ builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<TokenService, TokenService>();
 builder.Services.AddSingleton<ChatService>();
 builder.Services.AddDbContext<DatabaseContext>(options =>
-    {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString"));
-    });
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString"));
+});
 
 
 // Specify identity requirements
@@ -128,7 +127,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
-app.UseAuthentication();
 
 app.UseHttpsRedirection();
 

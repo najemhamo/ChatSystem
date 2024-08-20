@@ -8,7 +8,7 @@ export default function ProfilePage() {
   const { memberId } = useParams();
   const { user, setUser } = useContext(AuthContext);
   const { users, setUsers } = useContext(UserContext);
-  const { socket, updateChannel, deleteChannel } = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
   const [buttonText, setButtonText] = useState("Edit");
   const [userProfile, setUserProfile] = useState({});
   const ownUserProfile = user && user.id === parseInt(memberId);
@@ -28,18 +28,6 @@ export default function ProfilePage() {
       const updatedUser = { ...messageObj.content };
       updateUsers({ updatedUser });
     }
-
-    // NECESSARY???
-    // if (messageObj.type === "channelUpdate") {
-    //   const updatedChannel = {
-    //     name: messageObj.content,
-    //     id: messageObj.id,
-    //   };
-    //   updateChannel({ updatedChannel });
-    // } else if (messageObj.type === "channelDelete") {
-    //   deleteChannel({ id: messageObj.id });
-    // }
-    //
   };
 
   const updateUsers = (data) => {

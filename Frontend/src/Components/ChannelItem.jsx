@@ -31,13 +31,11 @@ export default function ChannelItem(props) {
         })
       )
 
-      const token = localStorage.getItem("authToken")
-
       // UPDATE the channel name
       const putOptions = {
         method: "PUT",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({name: channelName}),
@@ -52,29 +50,29 @@ export default function ChannelItem(props) {
   const handleDelete = () => 
   {
     // Delete channel Websocket
-    // socket.send(
-    //   JSON.stringify({
-    //     type: "channelDelete",
-    //     content: "",
-    //     id: channel.id,
-    //   })
-    // );
-    // deleteChannel({ id: channel.id });
-
+    socket.send(
+      JSON.stringify({
+        type: "channelDelete",
+        content: "",
+        id: channel.id,
+      })
+    );
+    deleteChannel({ id: channel.id });
 
     // DELETE channel
-    // const deleteOptions = {
-    //   method: "DELETE",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(channel),
-    // };
+    const deleteOptions = {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(channel),
+    };
 
-    // fetch(
-    //   `http://localhost:5007/chat/channels/${channel.id}?id=${channel.id}`,
-    //   deleteOptions
-    // );
+    fetch(
+      `http://localhost:5007/chat/channels/${channel.id}?id=${channel.id}`,
+      deleteOptions
+    );
   };
 
   return (
@@ -90,7 +88,7 @@ export default function ChannelItem(props) {
           {admin &&
           <div>
             <i className="fa fa-bars" onClick={handleEdit}></i>
-            <i className="fa fa-trash" onClick={handleDelete}></i>
+            <i className="fa fa-trash rightPad" onClick={handleDelete}></i>
           </div>
           }
         </div>
@@ -105,7 +103,7 @@ export default function ChannelItem(props) {
           {admin &&
           <div>
             <i onClick={handleEdit}> &#10003;</i>
-            <i className="fa fa-trash" onClick={handleDelete}></i>
+            <i className="fa fa-trash rightPad" onClick={handleDelete}></i>
           </div>
           }
         </div>

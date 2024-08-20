@@ -67,29 +67,30 @@ export default function HomePage() {
   const onAddChannel = () =>
   {
     // POST new channel
-    // const postOptions = {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({name: "New Channel"}),
-    // };
+    const postOptions = {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({name: "New Channel"}),
+    };
 
-    // fetch(
-    //   `http://localhost:5007/chat/channels`,
-    //   postOptions
-    // )
-    //   .then((response) => response.json())
-    //   .then(() => {
-    //     addChannel()
+    fetch(
+      `http://localhost:5007/chat/channels`,
+      postOptions
+    )
+      .then((response) => response.json())
+      .then(() => {
+        addChannel()
 
-    //     // Websocket new channel
-    //     socket.send(
-    //       JSON.stringify({
-    //         type: "channelAdd"
-    //       })
-    //     );
-    //   });
+        // Websocket new channel
+        socket.send(
+          JSON.stringify({
+            type: "channelAdd"
+          })
+        );
+      });
   }
 
   // SOCKET
@@ -118,12 +119,13 @@ export default function HomePage() {
             {channels.map((channel, index) => (
               <li key={index}>
                 <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
-                  <ChannelItem channel={channel} admin={true}/>
+                  <ChannelItem channel={channel} admin={user.role === 1}/>
                 </SocketContext.Provider>
               </li>
             ))}
           </ul>
-          <button onClick={onAddChannel}>+</button>
+          
+          {user.role === 1 && <button className="addBtn" onClick={onAddChannel}>+</button>}
 
           <div className="navbarProfile">
             <div>

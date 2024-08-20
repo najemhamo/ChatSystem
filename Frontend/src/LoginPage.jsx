@@ -78,7 +78,6 @@ export default function LoginPage() {
               (user) => user.userName === data.userName
             )[0];
 
-            console.log("DATA", data, tmpUser)
             login(tmpUser, data.token);
           });
       }

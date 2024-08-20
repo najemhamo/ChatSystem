@@ -76,7 +76,8 @@ html {
 .sideNavbar {
   background-color: #202225;
   color: #fff;
-  padding: 2vw;
+  padding-right: 2vw;
+  padding-left: 1vw;
   height: 100vh;
   width: 15vw;
   position: fixed;
@@ -87,19 +88,27 @@ html {
   cursor: pointer;
 }
 
+.addBtn {
+  font-size: 1vw;
+}
+
 /* CHANNELS */
 .channels {
   list-style-type: none;
   padding: 0;
+  max-height: 60vh;
+  width: 17vw;
+  overflow-y: scroll;
 }
 
 .fixChannel {
   display: flex;
   justify-content: space-between;
+  /* background-color: red; */
 }
 
 .fixChannel p {
-  font-size: 1.5vw;
+  font-size: 1.2vw;
 }
 
 .fixChannel div {
@@ -109,6 +118,10 @@ html {
 .fixChannel div i {
   padding-left: 1vw;
   font-size: 1vw;
+}
+
+.rightPad {
+  padding-right: 1vw;
 }
 
 .fixChannel input {
@@ -126,7 +139,7 @@ html {
 }
 
 .navbarProfile p {
-  font-size: 2vw;
+  font-size: 1.5vw;
   cursor: pointer;
   margin-top: 1vw;
   margin-bottom: 0.5vw;

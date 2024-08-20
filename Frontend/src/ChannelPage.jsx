@@ -9,7 +9,7 @@ export default function ChannelPage(props) {
   const { channels } = props;
   const { channelId } = useParams();
   const [messages, setMessages] = useState([]);
-  const { socket, updateChannel, deleteChannel } = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
   const channel = channels[channelId - 1];
 
   // GET messages
@@ -43,19 +43,6 @@ export default function ChannelPage(props) {
     } else if (messageObj.type === "messageDelete") {
       deleteMessage({ id: messageObj.id });
     }
-
-
-    // NECESSARY???
-    // if (messageObj.type === "channelUpdate") {
-    //   const updatedChannel = {
-    //     name: messageObj.content,
-    //     id: messageObj.id,
-    //   };
-    //   updateChannel({ updatedChannel });
-    // } else if (messageObj.type === "channelDelete") {
-    //   deleteChannel({ id: messageObj.id });
-    // }
-    //
   };
 
   const updateMessage = (data) => {
