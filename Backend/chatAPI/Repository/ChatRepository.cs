@@ -19,6 +19,32 @@ namespace Repository
             return await _context.Channels.ToListAsync();
         }
 
+        public async Task<Channel> GetChannelById(int id, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations)
+        {
+            if (preloadPolicy == PreloadPolicy.PreloadRelations)
+            {
+                var channel = await _context.Channels
+                    .Include(c => c.MemberChannels)
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+                if (channel != null)
+                {
+                    return channel;
+                }
+            }
+            else
+            {
+                var channel = await _context.Channels.FirstOrDefaultAsync(c => c.Id == id);
+
+                if (channel != null)
+                {
+                    return channel;
+                }
+            }
+
+            // Return null if channel is not found
+            return null;
+        }
         public async Task<IEnumerable<Member>> GetMembers()
         {
             return await _context.Members.ToListAsync();
@@ -224,7 +250,6 @@ namespace Repository
             }
             return member;
         }
-
     }
 }
 

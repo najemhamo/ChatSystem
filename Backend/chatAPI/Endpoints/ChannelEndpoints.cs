@@ -16,6 +16,7 @@ namespace Endpoints
             chat.MapGet("/", GetConnection);
             chat.MapGet("channels", GetAllChannels);
             chat.MapPost("channels", CreateChannel);
+            chat.MapGet("channels/{id}", GetChannelById);
             chat.MapPut("channels/{id}", UpdateChannelById);
             chat.MapDelete("channels/{id}", DeleteChannelById);
             chat.MapGet("channels/{id}/messages", GetMessagesByChannelId);
@@ -49,6 +50,20 @@ namespace Endpoints
             var channels = await chatRepository.GetChannels();
             return TypedResults.Ok(channels);
         }
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        private static async Task<IResult> GetChannelById(IChatRepository chatRepository, int id)
+        {
+            var channel = await chatRepository.GetChannelById(id);
+            if (channel == null)
+            {
+                return TypedResults.NotFound();
+            }
+            return TypedResults.Ok(channel);
+        }
+
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
