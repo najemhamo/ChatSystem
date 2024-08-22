@@ -7,10 +7,10 @@ namespace Models
     {
         [Column("id")]
         public int Id { get; set; }
-        
+
         [Column("name")]
         public string Name { get; set; }
-        
+
         [Column("user_name")]
         public string UserName { get; set; }
 
@@ -19,7 +19,7 @@ namespace Models
 
         [Column("password")]
         public string Password { get; set; }
-        
+
         [Column("about_me")]
         public string AboutMe { get; set; }
 

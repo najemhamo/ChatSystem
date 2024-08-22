@@ -25,6 +25,20 @@ namespace Endpoints
             if (payload.Name == null) return TypedResults.BadRequest("Name is required");
             if (payload.Email == null) return TypedResults.BadRequest("Email is required");
 
+            // check if user is already registered
+            var user = await userManager.FindByNameAsync(payload.UserName);
+            if (user != null)
+            {
+                return TypedResults.BadRequest("User already exists");
+            }
+
+            // check if email is already registered
+            var email = await userManager.FindByEmailAsync(payload.Email);
+            if (email != null)
+            {
+                return TypedResults.BadRequest("Email already exists");
+            }
+
             // Register the user in the database for the Authentication
             var result = await userManager.CreateAsync(new ApplicationUser
             {
@@ -51,6 +65,21 @@ namespace Endpoints
             if (payload.Password == null) return TypedResults.BadRequest("Password is required");
             if (payload.Name == null) return TypedResults.BadRequest("Name is required");
             if (payload.Email == null) return TypedResults.BadRequest("Email is required");
+
+            // check if user is already registered
+            var user = await userManager.FindByNameAsync(payload.UserName);
+            if (user != null)
+            {
+                return TypedResults.BadRequest("User already exists");
+            }
+
+            // check if email is already registered
+            var email = await userManager.FindByEmailAsync(payload.Email);
+            if (email != null)
+            {
+                return TypedResults.BadRequest("Email already exists");
+            }
+
 
             // Register the user in the database for the Authentication
             var result = await userManager.CreateAsync(new ApplicationUser
