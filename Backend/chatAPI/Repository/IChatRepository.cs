@@ -13,6 +13,8 @@ namespace Repository
     {
         Task<IEnumerable<Channel>> GetChannels();
         Task<Channel> CreateChannel(CreateOrUpdateChannelPayload payload);
+
+        Task<Channel> GetChannelById(int id, PreloadPolicy preloadPolicy = PreloadPolicy.DoNotPreloadRelations);
         Task<Channel> UpdateChannelById(int id, CreateOrUpdateChannelPayload payload);
         Task<Channel> DeleteChannelById(int id);
         Task<IEnumerable<Member>> GetMembers();
