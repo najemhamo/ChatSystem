@@ -5,7 +5,6 @@ import { AuthContext } from "./App";
 import ChannelPage from "./ChannelPage";
 import ProfilePage from "./ProfilePage";
 import ChannelItem from "./Components/ChannelItem";
-import PropTypes from "prop-types";
 
 export const SocketContext = createContext();
 
@@ -143,17 +142,10 @@ export default function HomePage() {
       </div>
       <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
         <Routes>
-          <Route path="/channel/:channelId" element={<ChannelPage channels={channels}/>}/>
+          <Route path="/channel/:channelId" element={<ChannelPage/>}/>
           <Route path="/users/:memberId" element={<ProfilePage/>}/>
         </Routes>
       </SocketContext.Provider>
     </>
   );
 }
-
-HomePage.propTypes = {
-  user: PropTypes.object,
-  logout: PropTypes.func,
-  users: PropTypes.array,
-  setUsers: PropTypes.func,
-};

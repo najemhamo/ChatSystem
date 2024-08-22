@@ -114,8 +114,5 @@ export default function ChannelItem(props) {
 
 ChannelItem.propTypes = {
   channel: PropTypes.object,
-  admin: PropTypes.bool,
-  socket: PropTypes.object,
-  updateChannel: PropTypes.func,
-  deleteChannel: PropTypes.func,
+  admin: PropTypes.bool
 };

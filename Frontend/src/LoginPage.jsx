@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext, UserContext } from "./App";
-import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 const INITIAL_USER = {
@@ -85,7 +84,3 @@ export default function LoginPage() {
     </>
   );
 }
-
-LoginPage.propTypes = {
-  users: PropTypes.array,
-};

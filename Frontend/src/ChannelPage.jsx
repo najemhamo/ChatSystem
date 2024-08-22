@@ -3,14 +3,19 @@ import { useParams } from "react-router-dom";
 import { SocketContext } from "./HomePage";
 import SendMessage from "./Components/SendMessage";
 import MessageItem from "./Components/MessageItem";
-import PropTypes from "prop-types";
 
-export default function ChannelPage(props) {
-  const { channels } = props;
+export default function ChannelPage() {
   const { channelId } = useParams();
+  const [channel, setChannel] = useState([]);
   const [messages, setMessages] = useState([]);
   const { socket } = useContext(SocketContext);
-  const channel = channels[channelId - 1];
+
+  // GET channel
+  useEffect(() => {
+    fetch(`http://localhost:5007/chat/channels/${channelId}`)
+      .then((response) => response.json())
+      .then((data) => setChannel(data));
+  }, [channelId]);
 
   // GET messages
   useEffect(() => {
@@ -102,10 +107,3 @@ export default function ChannelPage(props) {
     </>
   );
 }
-
-ChannelPage.propTypes = {
-  channels: PropTypes.array,
-  socket: PropTypes.object,
-  updateChannel: PropTypes.func,
-  deleteChannel: PropTypes.func,
-};

@@ -122,7 +122,6 @@ export default function MessageItem(props) {
 
 MessageItem.propTypes = {
   message: PropTypes.object,
-  socket: PropTypes.object,
   updateMessage: PropTypes.func,
   deleteMessage: PropTypes.func,
 };

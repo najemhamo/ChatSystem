@@ -69,6 +69,5 @@ export default function SendMessage(props) {
 }
 
 SendMessage.propTypes = {
-  socket: PropTypes.object,
   addMessage: PropTypes.func,
 };
