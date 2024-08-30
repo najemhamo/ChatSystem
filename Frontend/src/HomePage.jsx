@@ -4,15 +4,11 @@ import { useContext } from "react";
 import { AuthContext } from "./App";
 import ChannelPage from "./ChannelPage";
 import ProfilePage from "./ProfilePage";
-import HomeSocketPage from "./HomeSocketPage";
 import ChannelItem from "./Components/ChannelItem";
-import PropTypes from "prop-types";
 
-export const UserContext = createContext();
 export const SocketContext = createContext();
 
-export default function HomePage(props) {
-  const { users, setUsers } = props;
+export default function HomePage() {
   const [socket] = useState(new WebSocket("ws://localhost:5007/chat"));
   const [channels, setChannels] = useState([]);
   const navigate = useNavigate();
@@ -24,16 +20,6 @@ export default function HomePage(props) {
       .then((response) => response.json())
       .then((data) => setChannels(data));
   }, []);
-
-  // Users
-  const updateUsers = (data) => {
-    const newUsers = users.map((usr) => {
-      if (usr.id === data.updatedUser.id) return data.updatedUser;
-      return usr;
-    });
-
-    setUsers(newUsers);
-  };
 
   // CHANNELS
   const updateChannel = (data) => {
@@ -69,6 +55,61 @@ export default function HomePage(props) {
     }
   };
 
+  const addChannel = () =>
+  {
+    // GET channels
+    fetch("http://localhost:5007/chat/channels")
+    .then((response) => response.json())
+    .then((data) => setChannels(data))
+  }
+
+  const onAddChannel = () =>
+  {
+    // POST new channel
+    const postOptions = {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({name: "New Channel"}),
+    };
+
+    fetch(
+      `http://localhost:5007/chat/channels`,
+      postOptions
+    )
+      .then((response) => response.json())
+      .then(() => {
+        addChannel()
+
+        // Websocket new channel
+        socket.send(
+          JSON.stringify({
+            type: "channelAdd"
+          })
+        );
+      });
+  }
+
+  // SOCKET
+  socket.onmessage = function (event) {
+    const messageObj = JSON.parse(event.data);
+
+    if (messageObj.type === "channelUpdate")
+    {
+      const updatedChannel = {
+        name: messageObj.content,
+        id: messageObj.id,
+      };
+    updateChannel({ updatedChannel });
+    }
+    else if (messageObj.type === "channelDelete")
+      deleteChannel({ id: messageObj.id })
+    else if (messageObj.type === "channelAdd")
+      addChannel()
+  }
+
   return (
     <>
       <div className="container">
@@ -77,43 +118,34 @@ export default function HomePage(props) {
             {channels.map((channel, index) => (
               <li key={index}>
                 <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
-                  <ChannelItem channel={channel}/>
+                  <ChannelItem channel={channel} admin={user.role === 1}/>
                 </SocketContext.Provider>
               </li>
             ))}
           </ul>
-        </nav>
 
-        <div className="profileBar">
-          <img
-            src={user && user.profilePicture}
-            width={180}
-            height={150}
-          ></img>
-          <p onClick={() => navigate(`/users/${user.id}`)}>
-            {user && user.userName}
-          </p>
-          <button className="logoutButton" onClick={logout}>
-            Logout
-          </button>
-        </div>
+          {user && user.role === 1 && <button className="addBtn" onClick={onAddChannel}>+</button>}
+
+          <div className="navbarProfile">
+            <div>
+            <img src={user && user.profilePicture}></img>
+              
+            <p onClick={() => navigate(`/users/${user.id}`)}>
+              {user && user.userName}
+            </p>
+            </div>
+            <button className="logoutButton" onClick={logout}>
+              Logout
+            </button>
+          </div>
+        </nav>
       </div>
-      <UserContext.Provider value={{ users }}>
-        <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
-          <Routes>
-            <Route path="/" element={<HomeSocketPage/>}/>
-            <Route path="/channel/:channelId" element={<ChannelPage channels={channels}/>}/>
-            <Route path="/users/:memberId" element={<ProfilePage updateUsers={updateUsers}/>}/>
-          </Routes>
-        </SocketContext.Provider>
-      </UserContext.Provider>
+      <SocketContext.Provider value={{ socket, updateChannel, deleteChannel }}>
+        <Routes>
+          <Route path="/channel/:channelId" element={<ChannelPage/>}/>
+          <Route path="/users/:memberId" element={<ProfilePage/>}/>
+        </Routes>
+      </SocketContext.Provider>
     </>
   );
 }
-
-HomePage.propTypes = {
-  user: PropTypes.object.isRequired,
-  logout: PropTypes.func.isRequired,
-  users: PropTypes.array.isRequired,
-  setUsers: PropTypes.func.isRequired,
-};

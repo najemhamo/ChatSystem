@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-import { SocketContext, UserContext } from "../HomePage";
-import { AuthContext } from "../App";
+import { useContext, useState } from "react";
+import { SocketContext } from "../HomePage";
+import { AuthContext, UserContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -10,92 +10,78 @@ export default function MessageItem(props) {
   const { user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
   const messageUser = users.filter((urs) => message.memberId === urs.id)[0]
-  // const messageUser = users[message.memberId - 2];
 
   const [buttonText, setButtonText] = useState("Edit");
-  const [newMessage, setNewMessage] = useState([]);
-  const [messageUpdate, setMessageUpdate] = useState({});
-  const [messageDelete, setMessageDelete] = useState({});
   const navigate = useNavigate();
   const ownMessage =
     user && messageUser && user.id === messageUser.id ? true : false;
 
-  // UPDATE message
-  useEffect(() => {
-    if (!messageUpdate.messageText) return;
 
-    socket.send(
-      JSON.stringify({
+  const handleEdit = () =>
+  {
+    if (buttonText === "Save")
+    {
+      // Create the new message
+      const newMessage = document.getElementById("editedMessage").value    
+      if (newMessage.length === 0 || newMessage === message.messageText)
+      {
+        setButtonText("Edit");
+        return;
+      }
+      message.messageText = newMessage
+      const updatedMessage = message
+
+
+      // Websocket update message
+      socket.send(
+        JSON.stringify({
         type: "messageUpdate",
-        content: messageUpdate.messageText,
-        id: messageUpdate.id,
-        memberid: messageUpdate.memberId,
-        createdAt: messageUpdate.createdAt
-      })
-    );
+        content: newMessage,
+        id: message.id,
+        memberid: message.memberId,
+        createdAt: message.createdAt
+        })
+      )
+    
 
-    console.log("NEW MESS", messageUpdate)
+      // UPDATE the message
+      const putOptions = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({messageText: newMessage}),
+      }
 
-    const putOptions = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({messageText: messageUpdate.messageText}),
-    };
+      fetch(`http://localhost:5007/chat/messages/${message.id}?id=${message.id}`, putOptions)
+      updateMessage({ updatedMessage });
+      setButtonText("Edit");
+    } else setButtonText("Save");
+  };
 
-    fetch(
-      `http://localhost:5007/chat/messages/${messageUpdate.id}?id=${messageUpdate.id}`,
-      putOptions
-    );
-  }, [messageUpdate]);
 
-  // DELETE message
-  useEffect(() => {
-    if (!messageDelete.messageText) return;
-
+  const handleDelete = () => {
+    
+    // Delete message Websocket
     socket.send(
-      JSON.stringify({ type: "messageDelete", content: "", id: message.id })
+      JSON.stringify({ type: "messageDelete", id: message.id })
     );
-    deleteMessage({ id: messageDelete.id });
+    deleteMessage({ id: message.id });
 
+
+    // DELETE message
     const deleteOptions = {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(messageDelete),
+      body: JSON.stringify(message.id),
     };
 
     fetch(
       `http://localhost:5007/chat/messages/${message.id}?id=${message.id}`,
       deleteOptions
     );
-  }, [messageDelete]);
-
-  const handleEdit = () => {
-    if (buttonText === "Save") {
-      if (!newMessage.messageText || newMessage.messageText.length === 0) {
-        setButtonText("Edit");
-        return;
-      }
-
-      let updatedMessage = message;
-      updatedMessage.messageText = newMessage.messageText;
-
-      setMessageUpdate(updatedMessage);
-      updateMessage({ updatedMessage });
-      setNewMessage([]);
-      setButtonText("Edit");
-    } else setButtonText("Save");
-  };
-
-  const handleDelete = () => {
-    setMessageDelete(message);
-  };
-
-  const handleInput = (event) => {
-    setNewMessage({ messageText: event.target.value });
   };
 
   return (
@@ -106,7 +92,6 @@ export default function MessageItem(props) {
       ></link>
 
       <div>
-
         <div className="userTime">
           <p
             className="usernameText"
@@ -117,56 +102,26 @@ export default function MessageItem(props) {
           <p className="time">{message.createdAt}</p>
         </div>
 
-        <div>
-          {buttonText === "Edit" && <p className={ownMessage ? "messageTexting textFix" : "messageTexting"}>{message && message.messageText}</p>}
-          {buttonText === "Save" && <input className="messageTexting textFix" type="text" placeholder={message.messageText} onChange={handleInput}></input>}
+        <div className="messageContainer">
+          {buttonText === "Edit" && <p>{message && message.messageText}</p>}
+          {buttonText === "Save" && <input id="editedMessage" type="text" name="editedMessage" defaultValue={message.messageText}></input>}
 
-          {/* <div> */}
+          <div>
             {ownMessage &&
             <>
-              <button className="messageBth messageEdit" onClick={handleEdit}><i className="fa fa-bars"></i></button>
-              <button className="messageBth" onClick={handleDelete}><i className="fa fa-trash"></i></button>
+              {buttonText === "Edit" && <i className="fa fa-bars" onClick={handleEdit}></i>}
+              {buttonText === "Save" && <i onClick={handleEdit}>&#10003;</i>}
+              <i className="fa fa-trash" onClick={handleDelete}></i>
             </>}
-          {/* </div> */}
-
+          </div>
         </div>
-
-
-        {/* <div>
-          {buttonText === "Edit" && (
-            <p
-              className={
-                ownMessage ? "messageTexting textFix" : "messageTexting"
-              }
-            >
-              {message && message.messageText}{" "}
-              {ownMessage && (
-                <i onClick={handleEdit} className="fa fa-bars faFix"></i>
-              )}
-              {ownMessage && (
-                <i onClick={handleDelete} className="fa fa-trash faDix "></i>
-              )}
-            </p>
-          )}
-          {buttonText === "Save" && (
-            <input
-              className={
-                ownMessage ? "messageTexting textFix" : "messageTexting"
-              }
-              type="text"
-              placeholder={message.messageText}
-              onChange={handleInput}
-            ></input>
-          )}
-        </div> */}
       </div>
     </>
   );
 }
 
 MessageItem.propTypes = {
-  message: PropTypes.object.isRequired,
-  socket: PropTypes.object.isRequired,
-  updateMessage: PropTypes.func.isRequired,
-  deleteMessage: PropTypes.func.isRequired,
+  message: PropTypes.object,
+  updateMessage: PropTypes.func,
+  deleteMessage: PropTypes.func,
 };

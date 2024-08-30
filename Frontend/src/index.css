@@ -18,6 +18,7 @@ a {
   color: #ffffff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #b9bbbe;
 }
@@ -53,25 +54,12 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #37393f;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #b9bbbe;
-  }
-}
-
-/* Home Page */
 /* General styles */
 body,
 html {
@@ -81,99 +69,133 @@ html {
   height: 100%;
 }
 
+/* Home Page */
 .container {
   display: flex;
+  flex-direction: column;
 }
 
 .sideNavbar {
   background-color: #202225;
   color: #fff;
-  padding: 20px;
-  width: 250px;
+  padding-right: 2vw;
+  padding-left: 1vw;
   height: 100vh;
-  flex-direction: column;
+  width: 15vw;
   position: fixed;
   top: 0;
   left: 0;
 }
-.sidenav a:hover {
-  color: #f1f1f1;
+
+.sideNavbar li:hover {
+  cursor: pointer;
 }
 
-.profileBar {
-  background-color: #292b2f;
-  color: #fff;
-  padding: 20px;
-  align-items: center;
-  justify-content: space-between;
-  width: 250px;
-  position: fixed;
-  flex-direction: column;
-  left: 0;
-  bottom: 0;
+.addBtn {
+  font-size: 1vw;
 }
 
+/* CHANNELS */
 .channels {
   list-style-type: none;
   padding: 0;
+  max-height: 60vh;
+  width: 17vw;
+  overflow-y: scroll;
 }
 
-.channels li {
-  margin-bottom: 10px;
+.fixChannel {
+  display: flex;
+  justify-content: space-between;
 }
 
-.profile {
-  margin-top: auto;
+.fixChannel p {
+  font-size: 1.2vw;
 }
 
-/* .profile img {
-  width: 50px;
-  height: 50px;
+.fixChannel div {
+  align-self: center;
+}
+
+.fixChannel div i {
+  padding-left: 1vw;
+  font-size: 1vw;
+}
+
+.rightPad {
+  padding-right: 1vw;
+}
+
+.fixChannel input {
+  font-size: 1.5vw;
+  width: 10vw;
+  margin-top: 1.8vw;
+  margin-bottom: 1.5vw;
+}
+
+/* USER PROFILE */
+.navbarProfile {
+  position: fixed;
+  bottom: 0;
+  width: 15vw;
+}
+
+.navbarProfile p {
+  font-size: 1.5vw;
+  cursor: pointer;
+  margin-top: 1vw;
+  margin-bottom: 0.5vw;
+}
+
+.navbarProfile img {
+  width: 7vw;
+  height: 7vw;
   border-radius: 50%;
-} */
+  float: left;
+}
 
 .logoutButton {
-  display: inline-block;
-  width: 100%;
-  padding: 10px 10px;
+  color: #fff;
   background-color: #7289da;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  font-size: 0.8vw;
+  margin-bottom: 2vw;
 }
 
-.editButton {
-  display: inline-block;
-  width: 40%;
-  padding: 5px 10px;
-  background-color: #7289da;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 10px;
-  margin-left: 10px;
+/* PROFILE PAGE */
+.profile {
+  display: flex;
+  flex-direction: column;
+  height: 40vw;
 }
 
-.meesageButton {
-  display: inline-block;
-  width: 5%;
-  padding: 5px 5px;
-  background-color: #37393f;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 10px;
+.profile h1 {
+  font-size: 3.5vw;
+  margin-bottom: 0.5vw;
 }
 
-.logoutButton:hover,
-.editButton:hover {
-  background-color: #677bc4;
+.profile input {
+  font-size: 1vw;
+  margin-top: 1vw;
+  margin-bottom: 1vw;
+  text-align: center;
 }
+
+.profile div p {
+  font-size: 1.5vw;
+}
+
+.userImage img {
+  height: 20vw;
+  margin-top: 0.5vw;
+}
+
+.profileEdit {
+  font-size: 1vw;
+  margin-top: 2vw;
+}
+
+
 
 /* Main content styles */
 .mainContent {
@@ -186,6 +208,7 @@ html {
   .container {
     flex-direction: column;
   }
+
   .sideNavbar {
     width: 100%;
     order: 2;

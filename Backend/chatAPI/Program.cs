@@ -47,9 +47,9 @@ builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<TokenService, TokenService>();
 builder.Services.AddSingleton<ChatService>();
 builder.Services.AddDbContext<DatabaseContext>(options =>
-    {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString"));
-    });
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString"));
+});
 
 
 // Specify identity requirements
